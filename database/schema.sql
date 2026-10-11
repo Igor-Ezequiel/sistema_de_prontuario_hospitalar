@@ -101,6 +101,16 @@ CREATE TABLE permissao_extra (
     coordenador_id INT REFERENCES coordenador(id)
 );
 
+CREATE TABLE auditoria_permissao_prontuario(
+    id SERIAL PRIMARY KEY,
+    acao VARCHAR(50) NOT NULL,
+    data_hora TIMESTAMP NOT NULL,
+    justificativa VARCHAR(255) NOT NULL,
+    medico_id INT REFERENCES medico(id),
+    atendimento_id INT REFERENCES atendimento(id),
+    coordenador_id INT REFERENCES coordenador(id)
+);
+
 -- ==========================================
 -- 4. ROTINAS CLÍNICAS E ANEXOS (Nível 3)
 -- ==========================================

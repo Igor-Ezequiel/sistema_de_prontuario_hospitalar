@@ -1,6 +1,6 @@
 from datetime import datetime
-from models import (
-    Atendimento, Paciente, Medico, 
+from src.models.Classes import (
+    Atendimento, Paciente, Medico,
     Triagem, Evolucao, StatusAtendimento, CorRisco
 )
 

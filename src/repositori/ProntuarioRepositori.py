@@ -1,36 +1,32 @@
-# repository.py
 from datetime import datetime
 from models import (
-    Prontuario, Paciente, Medico, 
-    Triagem, Evolucao,
+    Atendimento, Paciente, Medico, 
+    Triagem, Evolucao, StatusAtendimento, CorRisco
 )
 
 class AtendimentoRepository:
     def __init__(self, db_conexao):
-    
         self.db = db_conexao
 
-    
     def criar_novo_atendimento(self, paciente_id: int) -> int:
         sql = """
-            INSERT INTO atendimento (data_hora_entrada, status, paciente_id) 
-            VALUES (:data_agora, :status_inicial, :pac_id)
+            INSERT INTO atendimento (data_hora_entrada, status, cor_risco, paciente_id) 
+            VALUES (:data_agora, :status_inicial, :cor_inicial, :pac_id)
             RETURNING id
         """
-    
         resultado = self.db.execute(sql, {
             "data_agora": datetime.now(),
-            "status_inicial": "Aguardando Triagem",
+            "status_inicial": StatusAtendimento.AGUARDANDO_TRIAGEM.value,
+            "cor_inicial": CorRisco.CINZA.value,
             "pac_id": paciente_id
         }).fetchone()
         
         self.db.commit()
         return resultado.id  
-    
 
-    def buscar_simples_por_id(self, atendimento_id: int):
+    def buscar_simples_por_id(self, atendimento_id: int) -> Atendimento:
         sql = """
-            SELECT id, data_hora_entrada, data_hora_alta, status, cor_risco, paciente_id, medico_id 
+            SELECT id, data_hora_entrada, data_hora_alta, status, cor_risco 
             FROM atendimento 
             WHERE id = :id
         """
@@ -39,15 +35,15 @@ class AtendimentoRepository:
         if not linha:
             return None
             
-        return {
-            "id": linha.id,
-            "status": linha.status,
-            "cor_risco": linha.cor_risco,
-            "paciente_id": linha.paciente_id,
-            "medico_id": linha.medico_id
-        }
+        return Atendimento(
+            atendimento_id = linha.id,
+            status = linha.status,
+            cor_risco = linha.cor_risco,
+            data_entrada = linha.data_hora_entrada,
+            data_alta = linha.data_hora_alta
+        )
 
-    def atualizar_dados_atendimento(self, atendimento_id: int, novo_status: str, cor_risco: str, medico_id: int = None):
+    def atualizar_dados_atendimento(self, atendimento_id: int, novo_status: StatusAtendimento, cor_risco: CorRisco, medico_id: int = None):
         sql = """
             UPDATE atendimento 
             SET 
@@ -67,28 +63,31 @@ class AtendimentoRepository:
     def cancelar_atendimento(self, atendimento_id: int):
         sql = """
             UPDATE atendimento 
-            SET status = 'Cancelado' 
+            SET status = :status_cancelado 
             WHERE id = :id
         """
-        self.db.execute(sql, {"id": atendimento_id})
+        self.db.execute(sql, {
+            "status_cancelado": StatusAtendimento.CANCELADO.value,
+            "id": atendimento_id
+        })
         self.db.commit()
 
     def registrar_alta_paciente(self, atendimento_id: int):
         sql = """
             UPDATE atendimento 
             SET 
-                status = 'Alta', 
+                status = :status_alta, 
                 data_hora_alta = :data_agora
             WHERE id = :id
         """
         self.db.execute(sql, {
+            "status_alta": StatusAtendimento.ALTA.value,
             "data_agora": datetime.now(),
             "id": atendimento_id
         })
         self.db.commit()
         
-    def buscar_prontuario_completo(self, atendimento_id: int):
-        
+    def buscar_prontuario_completo(self, atendimento_id: int) -> Atendimento:
         sql_capa = """
             SELECT 
                 a.id, a.status, a.cor_risco, a.data_hora_entrada, a.data_hora_alta,
@@ -104,7 +103,8 @@ class AtendimentoRepository:
         if not base:
             return None
 
-        prontuario = Prontuario(
+        # Instancia a classe Atendimento
+        prontuario = Atendimento(
             atendimento_id = base.id,
             status = base.status,
             cor_risco = base.cor_risco,
@@ -132,10 +132,8 @@ class AtendimentoRepository:
             WHERE atendimento_id = :id
             ORDER BY data_hora DESC
         """
-        
         linhas_triagem = self.db.execute(sql_triagens, {"id": atendimento_id}).fetchall()
-            
-            
+
         for t in linhas_triagem:
             objeto_triagem = Triagem(
                 id_triagem = t.id,
@@ -144,7 +142,6 @@ class AtendimentoRepository:
                 saturacao = t.saturacao,
                 data_hora = t.data_hora
             )
-           
             prontuario.triagens.append(objeto_triagem)
 
         sql_evolucoes = """
@@ -165,9 +162,6 @@ class AtendimentoRepository:
                 data_hora = e.data_hora,
                 medico_autor = e.medico_autor
             )
-        
             prontuario.evolucoes.append(objeto_evolucao)
 
         return prontuario
-        
-        

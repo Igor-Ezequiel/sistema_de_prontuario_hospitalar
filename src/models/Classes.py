@@ -1,4 +1,6 @@
 
+from enum import Enum
+
 class Paciente:
     def __init__(self, id_paciente, nome, cpf, data_nascimento):
         self.id = id_paciente
@@ -48,8 +50,23 @@ class Evolucao:
 
 
 
-class Prontuario:
-    def __init__(self, atendimento_id, status, cor_risco, data_entrada, data_alta):
+class StatusAtendimento(str, Enum):
+    AGUARDANDO_TRIAGEM = "Aguardando Triagem"
+    AGUARDANDO_MEDICO = "Aguardando Médico"
+    EM_ATENDIMENTO = "Em Atendimento"
+    ALTA = "Alta"
+    CANCELADO = "Cancelado"
+
+
+class CorRisco(str, Enum):
+    VERMELHO = "Vermelho"
+    AMARELO = "Amarelo"
+    VERDE = "Verde"
+    CINZA = "Cinza"
+    
+    
+class Atendimento:
+    def __init__(self, atendimento_id: int, status :StatusAtendimento, cor_risco: CorRisco, data_entrada, data_alta):
         self.id = atendimento_id
         self.status = status
         self.cor_risco = cor_risco

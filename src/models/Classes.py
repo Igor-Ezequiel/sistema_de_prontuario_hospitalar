@@ -49,8 +49,8 @@ class Evolucao:
         self.prescricoes = [] 
 
 
-
 class StatusAtendimento(str, Enum):
+    
     AGUARDANDO_TRIAGEM = "Aguardando Triagem"
     AGUARDANDO_MEDICO = "Aguardando Médico"
     EM_ATENDIMENTO = "Em Atendimento"
@@ -59,24 +59,38 @@ class StatusAtendimento(str, Enum):
 
 
 class CorRisco(str, Enum):
+    
     VERMELHO = "Vermelho"
+    LARANJA = "Laranja"
     AMARELO = "Amarelo"
     VERDE = "Verde"
+    AZUL = "Azul"
     CINZA = "Cinza"
     
     
 class Atendimento:
-    def __init__(self, atendimento_id: int, status :StatusAtendimento, cor_risco: CorRisco, data_entrada, data_alta):
+    
+    def __init__(
+        self,
+        atendimento_id: int,
+        status: StatusAtendimento,
+        cor_risco: CorRisco,
+        data_entrada,
+        data_alta=None,
+        paciente_id: int = None,
+        medico_id: int = None
+    ):
         self.id = atendimento_id
         self.status = status
         self.cor_risco = cor_risco
         self.data_entrada = data_entrada
         self.data_alta = data_alta
-        
-        self.paciente = None       
-        self.medico = None 
-        
-        self.triagens = [] 
+        self.paciente_id = paciente_id
+        self.medico_id = medico_id
+
+        self.paciente = None
+        self.medico = None
+        self.triagens = []
         self.evolucoes = []
 
 

@@ -3,7 +3,8 @@ from src.models.Classes import (
     Paciente,
     Medico,
     Triagem,
-    Evolucao
+    Evolucao,
+    StatusAtendimento  
 )
 
 class AtendimentoRepository:
@@ -42,8 +43,8 @@ class AtendimentoRepository:
             status=linha.status,
             cor_risco=linha.cor_risco,
             data_entrada=linha.data_hora_entrada,
-            data_alta=linha.data_hora_alta,
             paciente_id=linha.paciente_id,
+            data_alta=linha.data_hora_alta,
             medico_id=linha.medico_id
         )
 
@@ -65,7 +66,6 @@ class AtendimentoRepository:
             "id": ficha.id
         })
         self.db.commit()
-
 
     def deletar_atendimento(self, atendimento_id: int):
         sql = """
@@ -100,8 +100,8 @@ class AtendimentoRepository:
             status=base.status,
             cor_risco=base.cor_risco,
             data_entrada=base.data_hora_entrada,
-            data_alta=base.data_hora_alta,
             paciente_id=base.pac_id,
+            data_alta=base.data_hora_alta,
             medico_id=base.med_id
         )
 
@@ -120,7 +120,7 @@ class AtendimentoRepository:
             )
 
         sql_triagens = """
-            SELECT id, pressao_arterial, temperatura, saturacao, data_hora
+            SELECT id, pressao_arterial, temperatura, saturacao, data_hora, atendimento_id, enfermeiro_id
             FROM triagem
             WHERE atendimento_id = :id
             ORDER BY data_hora DESC
@@ -133,13 +133,15 @@ class AtendimentoRepository:
                 pressao=t.pressao_arterial,
                 temperatura=t.temperatura,
                 saturacao=t.saturacao,
-                data_hora=t.data_hora
+                data_hora=t.data_hora,
+                atendimento_id=t.atendimento_id,
+                enfermeiro_id=t.enfermeiro_id
             )
             prontuario.triagens.append(objeto_triagem)
 
         sql_evolucoes = """
             SELECT e.id, e.relato_clinico_observacoes, e.dias_entubacao, e.data_hora,
-                   m.nome AS medico_autor
+                   e.atendimento_id, e.medico_id, m.nome AS medico_autor
             FROM evolucao_clinica e
             INNER JOIN medico m ON e.medico_id = m.id
             WHERE e.atendimento_id = :id
@@ -151,8 +153,10 @@ class AtendimentoRepository:
             objeto_evolucao = Evolucao(
                 id_evolucao=e.id,
                 relato=e.relato_clinico_observacoes,
-                dias_entubacao=e.dias_entubacao,
                 data_hora=e.data_hora,
+                dias_entubacao=e.dias_entubacao,
+                atendimento_id=e.atendimento_id,
+                medico_id=e.medico_id,
                 medico_autor=e.medico_autor
             )
             prontuario.evolucoes.append(objeto_evolucao)

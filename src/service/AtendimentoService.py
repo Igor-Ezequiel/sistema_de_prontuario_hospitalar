@@ -1,4 +1,5 @@
 from datetime import datetime
+from src.service.SistemaFilaPrioridade import fila_hospital
 from src.repositori.AtendimentoRepositori import AtendimentoRepository
 from src.models.Classes import (
     StatusAtendimento,
@@ -22,12 +23,11 @@ class AtendimentoService:
             medico_id=None
         )
 
-        # CORRIGIDO: Estava escrito self.repository (com 'y')
         atendimento_id_gerado = self.repositori.criar_novo_atendimento(nova_ficha)
         return atendimento_id_gerado
     
     def buscar_atendimento(self, atendimento_id: int) -> Atendimento:
-        # CORRIGIDO: Estava escrito self.repository (com 'y')
+        
         ficha = self.repositori.buscar_simples_por_id(atendimento_id)
 
         if ficha is None:
@@ -35,21 +35,25 @@ class AtendimentoService:
 
         return ficha
     
+    
     def Classificar_Risco(self, atendimento_id: int, nova_cor: CorRisco):
         ficha = self.repositori.buscar_simples_por_id(atendimento_id)
         
         if ficha is None:
             raise ValueError("O paciente não possui atendimento registrado.")
         
-        # CORRIGIDO: Comparava ficha.cor_risco em vez do parâmetro nova_cor, e não atualizava a cor!
         if nova_cor == CorRisco.VERMELHO:
-            print("Emergência absoluta: risco iminente de morte, intervenção médica imediata.")
-            ficha.status = StatusAtendimento.EM_ATENDIMENTO.value
+            if not self.fila_hospital.Verificar_QuantidadeMax():
+                
+                print("Emergência absoluta: risco iminente de morte, intervenção médica imediata.")
+                ficha.status = StatusAtendimento.EM_ATENDIMENTO.value
+                fila_hospital.Inserir_Paciente(ficha)
         else:
-            ficha.status = StatusAtendimento.AGUARDANDO_TRIAGEM.value  # CORRIGIDO: Faltava o .value
+            ficha.status = StatusAtendimento.AGUARDANDO_TRIAGEM.value 
                 
         ficha.cor_risco = nova_cor.value
         self.repositori.atualizar_dados_atendimento(ficha)
+    
     
     def dar_alta(self, atendimento_id: int):
         ficha = self.repositori.buscar_simples_por_id(atendimento_id)
@@ -74,5 +78,5 @@ class AtendimentoService:
         if ficha is None:
             raise ValueError("O paciente não possui atendimento registrado.")
           
-        # CORRIGIDO: Passava o objeto 'ficha', mas o repositório espera apenas o 'atendimento_id'
+    
         self.repositori.deletar_atendimento(atendimento_id)

@@ -6,8 +6,8 @@ class StatusAtendimento(str, Enum):
     EM_ATENDIMENTO = "Em Atendimento"
     ALTA = "Alta"
     CANCELADO = "Cancelado"
-
-
+    
+        
 class CorRisco(str, Enum):
     VERMELHO = "Vermelho"
     LARANJA = "Laranja"
@@ -15,7 +15,17 @@ class CorRisco(str, Enum):
     VERDE = "Verde"
     AZUL = "Azul"
     CINZA = "Cinza"
-
+    
+    def DefinirPeso(self) -> int:
+        
+        match self.value:
+        
+            case "Vermelho" : return 9
+            case "Laranja" : return 8
+            case "Amarelo" : return 7
+            case "Verde" : return 6
+            case "Azul" : return 5
+            case _: return 0
 
 class StatusPrescricao(str, Enum):
     PENDENTE = "Pendente"

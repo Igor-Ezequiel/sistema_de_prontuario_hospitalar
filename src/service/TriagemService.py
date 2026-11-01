@@ -1,5 +1,6 @@
 from datetime import datetime
 from src.models.Classes import Triagem, CorRisco, StatusAtendimento
+from src.service.SistemaFilaPrioridade import fila_hospital
 
 class TriagemService:
     def __init__(self, triagem_repo, atendimento_repo):
@@ -16,27 +17,38 @@ class TriagemService:
         nova_cor: CorRisco
     ):
         ficha = self.atendimento_repo.buscar_simples_por_id(atendimento_id)
-
+        
         if ficha is None:
+            
             raise ValueError("O paciente não possui atendimento registrado.")
 
         if nova_cor == CorRisco.VERMELHO:
+            
             raise ValueError("Risco VERMELHO é emergência! Use 'Classificar_Risco' direto no AtendimentoService.")
 
         if ficha.status != StatusAtendimento.AGUARDANDO_TRIAGEM.value:
+            
             raise ValueError(f"O paciente não pode ser triado. Status atual: {ficha.status}")
 
-        match nova_cor:
-            case CorRisco.AZUL:
-                print("situações eletivas ou administrativas...")
-            case CorRisco.VERDE:
-                print("pouco urgentes, com baixo risco...")
-            case CorRisco.AMARELO:
-                print("urgência clínica, necessitam de atendimento...")
-            case CorRisco.LARANJA:
-                print("muita urgência, risco de agravamento rápido...")
-
+        ficha.cor_risco = nova_cor
+        ficha.status = StatusAtendimento.AGUARDANDO_MEDICO.value
         
+        if not fila_hospital.Verificar_QuantidadeMax():
+    
+            fila_hospital.Inserir_Paciente(ficha)
+    
+            match nova_cor:
+                case CorRisco.AZUL:
+                    print("Azul: situações eletivas ou administrativas...")
+                case CorRisco.VERDE:
+                    print("Verde: pouco urgentes, com baixo risco...")
+                case CorRisco.AMARELO:
+                    print("Amarelo: urgência clínica, necessitam de atendimento...")
+                case CorRisco.LARANJA:
+                    print("Laranja: muita urgência, risco de agravamento rápido...") 
+        else:
+            print("A fila está cheia!")
+                
         nova_triagem = Triagem(
             id_triagem=None,
             pressao=pressao,
@@ -51,13 +63,13 @@ class TriagemService:
         self.triagem_repo.inserir_triagem(nova_triagem)
     
         ficha.cor_risco = nova_cor.value
-        ficha.status = StatusAtendimento.AGUARDANDO_MEDICO.value
     
         self.atendimento_repo.atualizar_dados_atendimento(ficha)
 
         print("Triagem registrada e cor do atendimento atualizada com sucesso!")
 
-    def buscar_historico_triagens(self, atendimento_id: int) -> list[Triagem]:
+
+    def buscar_triagens(self, atendimento_id: int) -> list[Triagem]:
         ficha = self.atendimento_repo.buscar_simples_por_id(atendimento_id)
         
         if ficha is None:
@@ -69,6 +81,7 @@ class TriagemService:
             print("Nenhuma triagem registrada para este atendimento até o momento.")
             
         return historico
+
 
     def corrigir_erro_afericao(
         self, 

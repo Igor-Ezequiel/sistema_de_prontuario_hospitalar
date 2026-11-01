@@ -28,13 +28,13 @@ class Fila_Prioridade:
 
         peso, data, ficha = self.fila.get_nowait()
 
-        
         print(
             f"-> [CHAMANDO NO PAINEL] Ficha #{ficha.id} "
-            f"(Severidade: {ficha.cor_risco} | Chegada em: {data.strftime('%H:%M:%S')})"
+            f"(Severidade: {ficha.cor_risco} | Chegada em: {data})"
         )
+        
         return ficha
-
+    
     def Verificar_Tamanho(self):
         return self.fila.qsize()
 

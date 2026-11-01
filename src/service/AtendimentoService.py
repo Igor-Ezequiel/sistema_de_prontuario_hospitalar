@@ -42,14 +42,19 @@ class AtendimentoService:
         if ficha is None:
             raise ValueError("O paciente não possui atendimento registrado.")
         
+        ficha.cor_risco = nova_cor
+        
         if nova_cor == CorRisco.VERMELHO:
-            if not self.fila_hospital.Verificar_QuantidadeMax():
+            
+            if not fila_hospital.Verificar_QuantidadeMax():
                 
                 print("Emergência absoluta: risco iminente de morte, intervenção médica imediata.")
                 ficha.status = StatusAtendimento.EM_ATENDIMENTO.value
                 fila_hospital.Inserir_Paciente(ficha)
+            else:
+                print("A fila está cheia! Acione a contingência.")
         else:
-            ficha.status = StatusAtendimento.AGUARDANDO_TRIAGEM.value 
+            ficha.status = StatusAtendimento.AGUARDANDO_TRIAGEM.value
                 
         ficha.cor_risco = nova_cor.value
         self.repositori.atualizar_dados_atendimento(ficha)

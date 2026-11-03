@@ -92,3 +92,46 @@ class EvolucaoRepositori:
         self.db.execute(sql_evolucao, {"id": id_evolucao})
         
         self.db.commit()
+        
+    def buscar_historico_por_atendimento(self, atendimento_id: int) -> list[Evolucao]:
+        
+        sql = """
+            SELECT e.id, e.relato_clinico_observacoes, e.dias_entubacao, e.data_hora,
+                   e.atendimento_id, e.medico_id, m.nome AS medico_autor
+            FROM evolucao_clinica e
+            INNER JOIN medico m ON e.medico_id = m.id
+            WHERE e.atendimento_id = :id
+            ORDER BY e.data_hora DESC
+        """
+        linhas = self.db.execute(sql, {"id": atendimento_id}).fetchall()
+
+        historico = []
+        for e in linhas:
+            objeto_evolucao = Evolucao(
+                id_evolucao=e.id,
+                relato=e.relato_clinico_observacoes,
+                data_hora=e.data_hora,
+                dias_entubacao=e.dias_entubacao,
+                atendimento_id=e.atendimento_id,
+                medico_id=e.medico_id,
+                medico_autor=e.medico_autor
+            )
+            
+            
+            objeto_evolucao.diagnosticos = self.buscar_diagnosticos_por_evolucao(objeto_evolucao.id)
+            
+            historico.append(objeto_evolucao)
+
+        return historico
+
+    def vincular_diagnostico(self, id_evolucao: int, codigo_cid: str):
+    
+        sql = """
+            INSERT INTO diagnostico (Evolucao_Clinicaid, CIDcodigo)
+            VALUES (:id_evo, :cod_cid)
+        """
+        self.db.execute(sql, {
+            "id_evo": id_evolucao,
+            "cod_cid": codigo_cid
+        })
+        self.db.commit()

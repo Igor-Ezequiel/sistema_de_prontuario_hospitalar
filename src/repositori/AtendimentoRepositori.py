@@ -2,14 +2,19 @@ from src.models.Classes import (
     Atendimento,
     Paciente,
     Medico,
-    Triagem,
-    Evolucao,
     StatusAtendimento  
 )
+# Ajuste o nome dos arquivos abaixo se estiverem diferentes na sua pasta:
+from src.repositories.TriagemRepository import TriagemRepository
+from src.repositories.EvolucaoRepositori import EvolucaoRepositori
+
 
 class AtendimentoRepository:
     def __init__(self, db_conexao):
         self.db = db_conexao
+        # Instancia os repositórios especialistas compartilhando a mesma conexão
+        self.triagem_repo = TriagemRepository(db_conexao)
+        self.evolucao_repo = EvolucaoRepositori(db_conexao)
 
     def criar_novo_atendimento(self, ficha: Atendimento) -> int:
         sql = """
@@ -78,8 +83,9 @@ class AtendimentoRepository:
             "id": atendimento_id
         })
         self.db.commit()
-        
+
     def buscar_prontuario(self, atendimento_id: int) -> Atendimento:
+        
         sql_capa = """
             SELECT 
                 a.id, a.status, a.cor_risco, a.data_hora_entrada, a.data_hora_alta,
@@ -119,46 +125,7 @@ class AtendimentoRepository:
                 crm=base.crm
             )
 
-        sql_triagens = """
-            SELECT id, pressao_arterial, temperatura, saturacao, data_hora, atendimento_id, enfermeiro_id
-            FROM triagem
-            WHERE atendimento_id = :id
-            ORDER BY data_hora DESC
-        """
-        linhas_triagem = self.db.execute(sql_triagens, {"id": atendimento_id}).fetchall()
-
-        for t in linhas_triagem:
-            objeto_triagem = Triagem(
-                id_triagem=t.id,
-                pressao=t.pressao_arterial,
-                temperatura=t.temperatura,
-                saturacao=t.saturacao,
-                data_hora=t.data_hora,
-                atendimento_id=t.atendimento_id,
-                enfermeiro_id=t.enfermeiro_id
-            )
-            prontuario.triagens.append(objeto_triagem)
-
-        sql_evolucoes = """
-            SELECT e.id, e.relato_clinico_observacoes, e.dias_entubacao, e.data_hora,
-                   e.atendimento_id, e.medico_id, m.nome AS medico_autor
-            FROM evolucao_clinica e
-            INNER JOIN medico m ON e.medico_id = m.id
-            WHERE e.atendimento_id = :id
-            ORDER BY e.data_hora DESC
-        """
-        linhas_evolucao = self.db.execute(sql_evolucoes, {"id": atendimento_id}).fetchall()
-
-        for e in linhas_evolucao:
-            objeto_evolucao = Evolucao(
-                id_evolucao=e.id,
-                relato=e.relato_clinico_observacoes,
-                data_hora=e.data_hora,
-                dias_entubacao=e.dias_entubacao,
-                atendimento_id=e.atendimento_id,
-                medico_id=e.medico_id,
-                medico_autor=e.medico_autor
-            )
-            prontuario.evolucoes.append(objeto_evolucao)
+        prontuario.triagens = self.triagem_repo.buscar_historico_por_atendimento(atendimento_id)
+        prontuario.evolucoes = self.evolucao_repo.buscar_historico_por_atendimento(atendimento_id)
 
         return prontuario

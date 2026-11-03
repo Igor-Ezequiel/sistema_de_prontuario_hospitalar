@@ -1,10 +1,9 @@
-from src.models.Classes import Triagem
+from src.models.Classes import Enfermeiro, Triagem
 
 class TriagemRepository:
     def __init__(self, db_conexao):
         self.db = db_conexao
 
-   
     def inserir_triagem(self, ficha_triagem: Triagem) -> int:
         sql = """
             INSERT INTO triagem (pressao_arterial, temperatura, saturacao, data_hora, atendimento_id, enfermeiro_id)
@@ -23,19 +22,54 @@ class TriagemRepository:
         self.db.commit()
         return resultado.id
 
-    def buscar_historico_por_atendimento(self, atendimento_id: int) -> list[Triagem]:
+    def buscar_simples_por_id(self, triagem_id: int) -> Triagem:
         sql = """
             SELECT id, pressao_arterial, temperatura, saturacao, data_hora, atendimento_id, enfermeiro_id
             FROM triagem
-            WHERE atendimento_id = :id
-            ORDER BY data_hora DESC
+            WHERE id = :id
+        """
+        linha = self.db.execute(sql, {"id": triagem_id}).fetchone()
+
+       
+        if not linha:
+            return None
+
+        
+        return Triagem(
+            id_triagem=linha.id,
+            pressao=linha.pressao_arterial,
+            temperatura=linha.temperatura,
+            saturacao=linha.saturacao,
+            data_hora=linha.data_hora,
+            atendimento_id=linha.atendimento_id,
+            enfermeiro_id=linha.enfermeiro_id
+        )
+        
+    def buscar_historico_por_atendimento(self, atendimento_id: int) -> list[Triagem]:
+        sql = """
+            SELECT 
+                t.id AS triagem_id, 
+                t.pressao_arterial, 
+                t.temperatura, 
+                t.saturacao, 
+                t.data_hora, 
+                t.atendimento_id, 
+                t.enfermeiro_id,
+                e.id AS enf_id,     
+                e.nome AS enf_nome, 
+                e.coren
+            FROM triagem t
+            INNER JOIN enfermeiro e ON t.enfermeiro_id = e.id
+            WHERE t.atendimento_id = :id
+            ORDER BY t.data_hora DESC
         """
         linhas = self.db.execute(sql, {"id": atendimento_id}).fetchall()
 
         historico = []
         for linha in linhas:
+            
             triagem_obj = Triagem(
-                id_triagem=linha.id,
+                id_triagem=linha.triagem_id,
                 pressao=linha.pressao_arterial,
                 temperatura=linha.temperatura,
                 saturacao=linha.saturacao,
@@ -43,9 +77,16 @@ class TriagemRepository:
                 atendimento_id=linha.atendimento_id,
                 enfermeiro_id=linha.enfermeiro_id
             )
+            
+            triagem_obj.enfermeiro = Enfermeiro(
+                id_enfermeiro=linha.enf_id,
+                nome=linha.enf_nome,
+                coren=linha.coren
+            )
             historico.append(triagem_obj)
 
         return historico
+
 
     def Atualizar_Triagem(self, triagem_atualizada: Triagem):
         sql = """
@@ -64,6 +105,7 @@ class TriagemRepository:
         self.db.commit()
 
     def excluir_triagem_errada(self, triagem_id: int):
+        
         sql = "DELETE FROM triagem WHERE id = :id"
         self.db.execute(sql, {"id": triagem_id})
         self.db.commit()

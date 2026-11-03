@@ -234,6 +234,10 @@ class Evolucao:
         self.diagnosticos = []  
         self.prescricoes = []  
 
+class CID:
+    def __init__(self, codigo: str, descricao: str):
+        self.codigo = codigo
+        self.descricao = descricao
 
 class Atendimento:
     def __init__(

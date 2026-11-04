@@ -4,15 +4,15 @@ from src.models.Classes import (
     Medico,
     StatusAtendimento  
 )
-# Ajuste o nome dos arquivos abaixo se estiverem diferentes na sua pasta:
-from src.repositories.TriagemRepository import TriagemRepository
-from src.repositories.EvolucaoRepositori import EvolucaoRepositori
+
+from src.repositori.TriagemRepositori import TriagemRepository
+from src.repositori.EvolucaoRepositori import EvolucaoRepositori
 
 
 class AtendimentoRepository:
     def __init__(self, db_conexao):
         self.db = db_conexao
-        # Instancia os repositórios especialistas compartilhando a mesma conexão
+        
         self.triagem_repo = TriagemRepository(db_conexao)
         self.evolucao_repo = EvolucaoRepositori(db_conexao)
 
@@ -86,7 +86,7 @@ class AtendimentoRepository:
 
     def buscar_prontuario(self, atendimento_id: int) -> Atendimento:
         
-        sql_capa = """
+        sql = """
             SELECT 
                 a.id, a.status, a.cor_risco, a.data_hora_entrada, a.data_hora_alta,
                 p.id AS pac_id, p.nome AS pac_nome, p.cpf, p.data_nascimento,
@@ -96,7 +96,7 @@ class AtendimentoRepository:
             LEFT JOIN medico m ON a.medico_id = m.id
             WHERE a.id = :id
         """
-        base = self.db.execute(sql_capa, {"id": atendimento_id}).fetchone()
+        base = self.db.execute(sql, {"id": atendimento_id}).fetchone()
 
         if not base:
             return None

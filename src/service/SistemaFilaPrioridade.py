@@ -8,6 +8,7 @@ class Fila_Prioridade:
         self.fila = PriorityQueue(maxsize=limite_pacientes)
 
     def Inserir_Paciente(self, ficha: Atendimento):
+        
         if self.Verificar_QuantidadeMax():
             print("Fila cheia!")
             return None
@@ -22,6 +23,7 @@ class Fila_Prioridade:
         )
 
     def Atender_Proximo_Paciente(self):
+        
         if self.Verificar_Estado_Fila():
             print("Nenhum chamado pendente!")
             return None

@@ -1,1 +1,1 @@
-# Sistema de Gestão Hospitalar - TCC
+# Sistema de Gestão Hospitalar 

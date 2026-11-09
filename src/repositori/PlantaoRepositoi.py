@@ -1,4 +1,4 @@
-from src.models.Classes import Plantao
+from src.models.Classes import Plantao, Medico, Coordenador
 from src.repositori.MedicoRepositori import MedicoRepositori
 from src.repositori.CoordenadorRepositori import CoordenadorRepositori
 
@@ -71,7 +71,6 @@ class PlantaoRepositori:
         )
 
 
-    
     def buscar_detalhes_por_id(self, id_plantao: int) -> Plantao:
         sql = """
             SELECT p.id, p.setor_ala, p.data_hora_inicio, p.data_hora_fim, 
@@ -111,7 +110,7 @@ class PlantaoRepositori:
 
         return plantao
 
-
+    
     def excluir_plantao(self, id_plantao: int):
         sql = "DELETE FROM plantao WHERE id = :id"
         self.db.execute(sql, {"id": id_plantao})

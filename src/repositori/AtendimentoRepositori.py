@@ -127,5 +127,5 @@ class AtendimentoRepository:
 
         prontuario.triagens = self.triagem_repo.buscar_historico_por_atendimento(atendimento_id)
         prontuario.evolucoes = self.evolucao_repo.buscar_historico_por_atendimento(atendimento_id)
-
+        property.permissao_extra = self
         return prontuario

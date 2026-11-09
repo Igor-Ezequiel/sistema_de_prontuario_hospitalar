@@ -42,7 +42,7 @@ class PacienteRepositori:
             usuario_id=linha.usuario_id
         )
 
-        # Associação 1:1 opcional: se o paciente tiver conta de usuário, carrega o objeto Usuario
+        
         if paciente.usuario_id:
             paciente.usuario = self.usuario_repo.buscar_por_id(paciente.usuario_id)
 

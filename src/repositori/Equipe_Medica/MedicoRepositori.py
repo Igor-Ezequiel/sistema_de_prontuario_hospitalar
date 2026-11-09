@@ -96,7 +96,7 @@ class MedicoRepositori:
         self.db.commit()
 
 
-    def buscar_medicos_disponiveis(self, inicio_desejado, fim_desejado) -> list:
+    def buscar_medicos_disponiveis(self, inicio_desejado, fim_desejado) -> list[Medico]:
        
         sql = """
             SELECT id, nome, crm, especialidade 
@@ -109,15 +109,10 @@ class MedicoRepositori:
             )
         """
        
-        linhas = self.db.execute(sql, {
-            "inicio_desejado": inicio_desejado,
-            "fim_desejado": fim_desejado
-        }).fetchall()
+        linhas = self.db.execute(sql, {"inicio_desejado": inicio_desejado, "fim_desejado": fim_desejado}).fetchall()
         
-       
         if not linhas:
             return []
-        
         
         medicos_livres = []
         for linha in linhas:

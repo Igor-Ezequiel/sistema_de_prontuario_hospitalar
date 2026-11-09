@@ -1,6 +1,6 @@
 from src.models.Classes import Plantao, Medico, Coordenador
-from src.repositori.MedicoRepositori import MedicoRepositori
-from src.repositori.CoordenadorRepositori import CoordenadorRepositori
+from src.repositori.Equipe_Medica.MedicoRepositori import MedicoRepositori
+from src.repositori.Equipe_Medica.CoordenadorRepositori import CoordenadorRepositori
 
 class PlantaoRepositori:
 
@@ -72,6 +72,7 @@ class PlantaoRepositori:
 
 
     def buscar_detalhes_por_id(self, id_plantao: int) -> Plantao:
+        
         sql = """
             SELECT p.id, p.setor_ala, p.data_hora_inicio, p.data_hora_fim, 
                    p.medico_id, p.coordenador_id,

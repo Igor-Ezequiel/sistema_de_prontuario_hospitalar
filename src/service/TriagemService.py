@@ -7,15 +7,8 @@ class TriagemService:
         self.triagem_repo = triagem_repo
         self.atendimento_repo = atendimento_repo
 
-    def Criar_triagem(
-        self, 
-        atendimento_id: int, 
-        enfermeiro_id: int, 
-        pressao: str, 
-        temperatura: float, 
-        saturacao: int, 
-        nova_cor: CorRisco
-    ):
+    def Criar_triagem(self, atendimento_id: int, enfermeiro_id: int, pressao: str, temperatura: float, saturacao: int, nova_cor: CorRisco):
+        
         ficha = self.atendimento_repo.buscar_simples_por_id(atendimento_id)
         
         if ficha is None:
@@ -68,8 +61,17 @@ class TriagemService:
 
         print("Triagem registrada e cor do atendimento atualizada com sucesso!")
 
-
-    def buscar_triagens(self, atendimento_id: int) -> list[Triagem]:
+    def buscar_triagem_por_id(self, id_triagem: int) -> Triagem:
+       
+        triagem = self.triagem_repo.buscar_por_id(id_triagem)
+        
+        if not triagem:
+            raise ValueError("Triagem não encontrada no sistema.")
+            
+        return triagem
+    
+    def buscar_historico(self, atendimento_id: int) -> list[Triagem]:
+        
         ficha = self.atendimento_repo.buscar_simples_por_id(atendimento_id)
         
         if ficha is None:
@@ -81,15 +83,10 @@ class TriagemService:
             print("Nenhuma triagem registrada para este atendimento até o momento.")
             
         return historico
+    
 
-
-    def corrigir_erro_afericao(
-        self, 
-        triagem_id: int, 
-        nova_pressao: str, 
-        nova_temperatura: float, 
-        nova_saturacao: int
-    ):
+    def atualizar_triagem(self, triagem_id: int, nova_pressao: str, nova_temperatura: float, nova_saturacao: int):
+       
         triagem_corrigida = Triagem(
             id_triagem=triagem_id,
             pressao=nova_pressao,
@@ -97,7 +94,6 @@ class TriagemService:
             saturacao=nova_saturacao,
             data_hora=None 
         )
-        
         
         self.triagem_repo.Atualizar_Triagem(triagem_corrigida)
         print(f"Triagem {triagem_id} corrigida com sucesso!")

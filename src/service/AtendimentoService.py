@@ -1,16 +1,24 @@
-from datetime import datetime
 from src.service.SistemaFilaPrioridade import fila_hospital
 from src.repositori.AtendimentoRepositori import AtendimentoRepository
+from src.repositori.PlantaoRepositori import PlantaoRepositori
+from src.repositori.Equipe_Medica.MedicoRepositori import MedicoRepositori
 from src.models.Classes import (
     StatusAtendimento,
     CorRisco,
-    Atendimento
+    Atendimento,
 )
+
+from datetime import datetime
+
 
 class AtendimentoService:
     
-    def __init__(self, repositori: AtendimentoRepository):
+    def __init__(self, repositori: AtendimentoRepository, repositori_medico: MedicoRepositori, 
+                 repositori_plantao: PlantaoRepositori):
         self.repositori = repositori
+        self.repositori_medico = repositori_medico
+        self.repositori_plantao = repositori_plantao
+        
 
     def criar_atendimento(self, paciente_id: int) -> int:
         nova_ficha = Atendimento(
@@ -25,6 +33,7 @@ class AtendimentoService:
 
         atendimento_id_gerado = self.repositori.criar_novo_atendimento(nova_ficha)
         return atendimento_id_gerado
+    
     
     def buscar_atendimento(self, atendimento_id: int) -> Atendimento:
         
@@ -77,6 +86,7 @@ class AtendimentoService:
 
         self.repositori.atualizar_dados_atendimento(ficha)
         
+        
     def Deletar_Atendimento(self, atendimento_id: int):
         ficha = self.repositori.buscar_simples_por_id(atendimento_id)
         
@@ -85,3 +95,24 @@ class AtendimentoService:
           
     
         self.repositori.deletar_atendimento(atendimento_id)
+        
+        
+    def Chamar_Paciente(self, medico_id: int):
+        
+        hora_atual = datetime.now()
+        medico_plantao = self.repositori_plantao.verificar_plantao_ativo(medico_id, hora_atual)
+            
+        if not medico_plantao:
+            raise ValueError("Este médico não está em um plantão ativo no momento!")
+        
+        atender_proximo_paciente = fila_hospital.Atender_Proximo_Paciente()
+        
+        if atender_proximo_paciente is None:
+            raise ValueError("Não há pacientes aguardando na fila no momento.")
+        
+        ficha = self.repositori.buscar_simples_por_id(atender_proximo_paciente.id)
+        ficha.status = StatusAtendimento.EM_ATENDIMENTO.value
+        ficha.medico_id = medico_id
+        self.repositori.atualizar_dados_atendimento(ficha)
+            
+        return ficha

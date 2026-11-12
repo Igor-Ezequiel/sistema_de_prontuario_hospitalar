@@ -22,7 +22,7 @@ class Fila_Prioridade:
             f"[ENTRADA FILA] Paciente da Ficha #{ficha.id} ({ficha.cor_risco.value}) entrou na fila."
         )
 
-    def Atender_Proximo_Paciente(self):
+    def Atender_Proximo_Paciente(self) -> Atendimento:
         
         if self.Verificar_Estado_Fila():
             print("Nenhum chamado pendente!")

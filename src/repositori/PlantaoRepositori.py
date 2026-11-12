@@ -111,6 +111,19 @@ class PlantaoRepositori:
 
         return plantao
 
+    def verificar_plantao_ativo(self, medico_id: int, hora_atual) -> bool:
+        
+        sql = """
+            SELECT 1 
+            FROM plantao 
+            WHERE medico_id = :medico_id 
+            AND data_hora_inicio <= :hora_atual 
+            AND data_hora_fim >= :hora_atual
+        """
+        resultado = self.db.execute(sql, {"medico_id": medico_id, "hora_atual": hora_atual}).fetchone()
+        
+        return resultado is not None
+    
     
     def excluir_plantao(self, id_plantao: int):
         sql = "DELETE FROM plantao WHERE id = :id"

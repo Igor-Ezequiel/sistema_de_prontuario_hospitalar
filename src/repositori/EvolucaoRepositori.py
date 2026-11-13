@@ -107,7 +107,7 @@ class EvolucaoRepositori:
 
         historico = []
         for e in linhas:
-            objeto_evolucao = Evolucao(
+            evolucao = Evolucao(
                 id_evolucao=e.id,
                 relato=e.relato_clinico_observacoes,
                 data_hora=e.data_hora,
@@ -118,9 +118,9 @@ class EvolucaoRepositori:
             )
             
             
-            objeto_evolucao.diagnosticos = self.buscar_diagnosticos_por_evolucao(objeto_evolucao.id)
+            evolucao.diagnosticos = self.buscar_diagnosticos_por_evolucao(evolucao.id)
             
-            historico.append(objeto_evolucao)
+            historico.append(evolucao)
 
         return historico
 

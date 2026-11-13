@@ -1,8 +1,8 @@
-from src.models.Classes import (
-    Plantao
-)
+from src.models.Classes import Plantao
 from src.repositori.PlantaoRepositori import PlantaoRepositori
 from src.repositori.Equipe_Medica.MedicoRepositori import MedicoRepositori
+from src.exceptions import NaoEncontradoError, RegraDeNegocioError
+
 
 class PlantaoService:
 
@@ -11,9 +11,9 @@ class PlantaoService:
         self.medico_repo = medico_repo
         
 
-    def alocar_medico_no_plantao(self, coordenador_id: int, medico_id: int, setor_ala: str, data_hora_inicio, data_hora_fim) -> int:
+    def alocar_medico_no_plantao(self, coordenador_id: int, medico_id: int, setor_ala: str,
+    data_hora_inicio, data_hora_fim) -> int:
         
-       
         alocar = self.medico_repo.buscar_medicos_disponiveis(data_hora_inicio, data_hora_fim)
         
         medicos_livres = []
@@ -22,8 +22,7 @@ class PlantaoService:
             medicos_livres.append(medicos.id)
         
         if medico_id not in medicos_livres:
-           
-            raise ValueError("O médico não está disponível para este horário.")
+            raise RegraDeNegocioError("O médico não está disponível para este horário.")
             
         novo_plantao = Plantao(
             id_plantao=None,
@@ -37,8 +36,8 @@ class PlantaoService:
         return self.plantao_repo.inserir_plantao(novo_plantao)
         
         
-    def atualizar_plantao(self, id_plantao: int, coordenador_id: int, medico_id: int, setor_ala: str, data_hora_inicio, data_hora_fim):
-        
+    def atualizar_plantao(self, id_plantao: int, coordenador_id: int, medico_id: int, 
+    setor_ala: str, data_hora_inicio, data_hora_fim):
         
         plantao_corrigido = Plantao(
             id_plantao=id_plantao,
@@ -53,11 +52,10 @@ class PlantaoService:
             
     def buscar_plantao_por_id(self, id_plantao: int) -> Plantao:
         
-       
         plantao = self.plantao_repo.buscar_por_id(id_plantao)
         
         if plantao is None:
-            raise ValueError("Não tem Plantao")
+            raise NaoEncontradoError("Plantão não encontrado no sistema.")
         
         return plantao
         
@@ -67,7 +65,8 @@ class PlantaoService:
         plantao_detalhado = self.plantao_repo.buscar_detalhes_por_id(id_plantao)
         
         if plantao_detalhado is None:
-            raise ValueError("Não tem plantão")
+            raise NaoEncontradoError("Detalhes do plantão não encontrados no sistema.")
+            
         return plantao_detalhado
 
 

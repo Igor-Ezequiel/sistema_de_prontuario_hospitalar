@@ -7,6 +7,7 @@ from src.models.Classes import (
 
 from src.repositori.TriagemRepositori import TriagemRepository
 from src.repositori.EvolucaoRepositori import EvolucaoRepositori
+from src.repositori.PermissaoExtraRepositori import PermissaoExtraRepositori
 
 
 class AtendimentoRepository:
@@ -15,8 +16,9 @@ class AtendimentoRepository:
         
         self.triagem_repo = TriagemRepository(db_conexao)
         self.evolucao_repo = EvolucaoRepositori(db_conexao)
+        self.permissao_repo = PermissaoExtraRepositori(db_conexao)
 
-    def criar_novo_atendimento(self, ficha: Atendimento) -> int:
+    def inserir_atendimento(self, ficha: Atendimento) -> int:
         sql = """
             INSERT INTO atendimento (data_hora_entrada, status, cor_risco, paciente_id) 
             VALUES (:data_agora, :status_inicial, :cor_inicial, :pac_id)
@@ -85,7 +87,6 @@ class AtendimentoRepository:
         self.db.commit()
 
     def buscar_prontuario(self, atendimento_id: int) -> Atendimento:
-        
         sql = """
             SELECT 
                 a.id, a.status, a.cor_risco, a.data_hora_entrada, a.data_hora_alta,
@@ -127,5 +128,17 @@ class AtendimentoRepository:
 
         prontuario.triagens = self.triagem_repo.buscar_historico_por_atendimento(atendimento_id)
         prontuario.evolucoes = self.evolucao_repo.buscar_historico_por_atendimento(atendimento_id)
-        property.permissao_extra = self
+        
+        return prontuario
+    
+    def buscar_prontuario_para_auditoria(self, atendimento_id: int) -> Atendimento:
+        # 1. Reaproveita a sua própria função para puxar a base clínica!
+        prontuario = self.buscar_prontuario(atendimento_id)
+        
+        if not prontuario:
+            return None
+            
+        # 2. Faz o append do histórico APENAS nessa função administrativa
+        prontuario.permissoes_extras = self.permissao_repo.buscar_permissoes_por_atendimento(atendimento_id)
+        
         return prontuario

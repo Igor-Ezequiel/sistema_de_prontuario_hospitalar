@@ -42,7 +42,6 @@ class PacienteRepositori:
             usuario_id=linha.usuario_id
         )
 
-        
         if paciente.usuario_id:
             paciente.usuario = self.usuario_repo.buscar_por_id(paciente.usuario_id)
 

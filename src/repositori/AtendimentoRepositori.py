@@ -132,13 +132,14 @@ class AtendimentoRepository:
         return prontuario
     
     def buscar_prontuario_para_auditoria(self, atendimento_id: int) -> Atendimento:
-        # 1. Reaproveita a sua própria função para puxar a base clínica!
+        
         prontuario = self.buscar_prontuario(atendimento_id)
         
         if not prontuario:
             return None
             
-        # 2. Faz o append do histórico APENAS nessa função administrativa
         prontuario.permissoes_extras = self.permissao_repo.buscar_permissoes_por_atendimento(atendimento_id)
         
         return prontuario
+    
+    

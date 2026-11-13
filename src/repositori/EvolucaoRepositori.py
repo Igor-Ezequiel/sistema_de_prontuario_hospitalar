@@ -6,6 +6,7 @@ class EvolucaoRepositori:
         self.db = db_conexao
         
     def Inserir_Evolucao(self, ficha_evolucao: Evolucao) -> int:
+        
         sql = """
             INSERT INTO evolucao_clinica (relato_clinico_observacoes, dias_entubacao, data_hora, atendimento_id, medico_id)
             VALUES (:relato, :dias_entub, :data_hora, :atendi_id, :medico_id)
@@ -24,6 +25,7 @@ class EvolucaoRepositori:
         return resultado.id
         
     def buscar_simples_por_id(self, id_evolucao: int) -> Evolucao:
+        
         sql = """
             SELECT id, relato_clinico_observacoes AS relato, dias_entubacao, data_hora, atendimento_id, medico_id
             FROM evolucao_clinica
@@ -43,31 +45,9 @@ class EvolucaoRepositori:
             medico_id=linha.medico_id,
             atendimento_id=linha.atendimento_id
         )
-        
-    def buscar_diagnosticos_por_evolucao(self, evolucao_id: int) -> list[CID]:
-        sql = """
-            SELECT 
-                c.codigo, 
-                c.descricao
-            FROM diagnostico d
-            INNER JOIN CID c ON d.CIDcodigo = c.codigo
-            WHERE d.Evolucao_Clinicaid = :id
-        """
-        
-        linhas = self.db.execute(sql, {"id": evolucao_id}).fetchall()
-        
-        lista_cids = []
-        for linha in linhas:
-            cid_obj = CID(
-                codigo=linha.codigo,
-                descricao=linha.descricao
-            )
-            lista_cids.append(cid_obj)
-            
-        return lista_cids
-
 
     def Atualizar_Evolucao(self, evolucao_atualizada: Evolucao):
+       
         sql = """
             UPDATE evolucao_clinica
             SET relato_clinico_observacoes = :relato,
@@ -93,6 +73,30 @@ class EvolucaoRepositori:
         
         self.db.commit()
         
+    def buscar_diagnosticos_por_evolucao(self, evolucao_id: int) -> list[CID]:
+            
+        sql = """
+            SELECT 
+                c.codigo, 
+                c.descricao
+            FROM diagnostico d
+            INNER JOIN CID c ON d.CIDcodigo = c.codigo
+            WHERE d.Evolucao_Clinicaid = :id
+        """
+            
+        linhas = self.db.execute(sql, {"id": evolucao_id}).fetchall()
+            
+        lista_cids = []
+        for d in linhas:
+            cid_obj = CID(
+            codigo=d.codigo,
+            descricao=d.descricao
+            )
+        
+            lista_cids.append(cid_obj)
+                
+        return lista_cids
+    
     def buscar_historico_por_atendimento(self, atendimento_id: int) -> list[Evolucao]:
         
         sql = """
@@ -116,7 +120,6 @@ class EvolucaoRepositori:
                 medico_id=e.medico_id,
                 medico_autor=e.medico_autor
             )
-            
             
             evolucao.diagnosticos = self.buscar_diagnosticos_por_evolucao(evolucao.id)
             

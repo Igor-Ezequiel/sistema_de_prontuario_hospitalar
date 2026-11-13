@@ -14,13 +14,10 @@ class Fila_Prioridade:
             raise RegraDeNegocioError("A fila de prioridade do hospital atingiu a capacidade máxima!")
 
         peso = -ficha.cor_risco.DefinirPeso()
-        tupla = (peso, ficha.data_entrada, ficha)
+        tupla = (peso, ficha.data_entrada, ficha.id)
 
         self.fila.put_nowait(tupla)
         
-        
-        print(f"[ENTRADA FILA] Paciente da Ficha #{ficha.id} ({ficha.cor_risco.value}) entrou na fila.")
-
     def Atender_Proximo_Paciente(self) -> Atendimento:
         
         if self.Verificar_Estado_Fila():
@@ -28,11 +25,6 @@ class Fila_Prioridade:
             raise RegraDeNegocioError("Nenhum paciente aguardando na fila no momento!")
 
         peso, data, ficha = self.fila.get_nowait()
-
-        print(
-            f"-> [CHAMANDO NO PAINEL] Ficha #{ficha.id} "
-            f"(Severidade: {ficha.cor_risco} | Chegada em: {data})"
-        )
         
         return ficha
     

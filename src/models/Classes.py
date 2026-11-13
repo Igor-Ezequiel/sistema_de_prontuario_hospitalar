@@ -265,4 +265,4 @@ class Atendimento:
         self.triagens = []
         self.evolucoes = []
         self.fotos_anexadas = []  
-        self.permissao_extra = [] 
+        self.permissoes_extras = [] 

@@ -1,5 +1,6 @@
 from src.models.Classes import Medico
-from repositori.Equipe_Medica.UsuarioRepositori import UsuarioRepositori
+from src.repositori.Equipe_Medica.UsuarioRepositori import UsuarioRepositori
+
 
 class MedicoRepositori:
 
@@ -8,13 +9,11 @@ class MedicoRepositori:
         self.usuario_repo = UsuarioRepositori(db_conexao)
 
     def inserir_medico(self, medico: Medico) -> int:
-        
         id_gerado = self.usuario_repo.inserir_usuario(medico)
         medico.id = id_gerado
 
-        
         sql = """
-            INSERT INTO medico (id, nome, crm, especialidade)
+            INSERT INTO medico (id, nome, crm, especialidade_medica_id)
             VALUES (:id, :nome, :crm, :especialidade)
         """
         self.db.execute(sql, {
@@ -26,10 +25,9 @@ class MedicoRepositori:
         self.db.commit()
         return medico.id
 
-
     def buscar_por_id(self, id_medico: int) -> Medico:
         sql = """
-            SELECT m.id, m.nome, m.crm, m.especialidade,
+            SELECT m.id, m.nome, m.crm, m.especialidade_medica_id AS especialidade,
                    u.email, u.senha, u.ativo
             FROM medico m
             INNER JOIN usuario u ON m.id = u.id
@@ -50,10 +48,9 @@ class MedicoRepositori:
             ativo=bool(linha.ativo)
         )
 
-
     def buscar_por_crm(self, crm: str) -> Medico:
         sql = """
-            SELECT m.id, m.nome, m.crm, m.especialidade,
+            SELECT m.id, m.nome, m.crm, m.especialidade_medica_id AS especialidade,
                    u.email, u.senha, u.ativo
             FROM medico m
             INNER JOIN usuario u ON m.id = u.id
@@ -74,17 +71,14 @@ class MedicoRepositori:
             ativo=bool(linha.ativo)
         )
 
-
     def atualizar_medico(self, medico: Medico):
-        
         self.usuario_repo.atualizar_usuario(medico)
 
-       
         sql = """
             UPDATE medico
             SET nome = :nome,
                 crm = :crm,
-                especialidade = :especialidade
+                especialidade_medica_id = :especialidade
             WHERE id = :id
         """
         self.db.execute(sql, {
@@ -95,21 +89,24 @@ class MedicoRepositori:
         })
         self.db.commit()
 
-
     def buscar_medicos_disponiveis(self, inicio_desejado, fim_desejado) -> list[Medico]:
-       
         sql = """
-            SELECT id, nome, crm, especialidade 
-            FROM medico
-            WHERE id NOT IN (
-                SELECT medico_id
-                FROM plantao
-                WHERE data_hora_inicio < :fim_desejado 
-                  AND data_hora_fim > :inicio_desejado
-            )
+            SELECT m.id, m.nome, m.crm, m.especialidade_medica_id AS especialidade,
+                   u.email, u.ativo
+            FROM medico m
+            INNER JOIN usuario u ON m.id = u.id
+            WHERE u.ativo = TRUE
+              AND m.id NOT IN (
+                  SELECT medico_id
+                  FROM plantao
+                  WHERE data_hora_inicio < :fim_desejado 
+                    AND data_hora_fim > :inicio_desejado
+              )
         """
-       
-        linhas = self.db.execute(sql, {"inicio_desejado": inicio_desejado, "fim_desejado": fim_desejado}).fetchall()
+        linhas = self.db.execute(sql, {
+            "inicio_desejado": inicio_desejado, 
+            "fim_desejado": fim_desejado
+        }).fetchall()
         
         if not linhas:
             return []
@@ -120,15 +117,13 @@ class MedicoRepositori:
                 id_medico=linha.id,
                 nome=linha.nome,
                 crm=linha.crm,
-                especialidade=linha.especialidade
+                especialidade=linha.especialidade,
+                email=linha.email,
+                ativo=bool(linha.ativo)
             )
             medicos_livres.append(medico)
             
         return medicos_livres
-        
-        
-        
-        
+
     def desativar_medico(self, id_medico: int):
-       
         self.usuario_repo.desativar_usuario(id_medico)

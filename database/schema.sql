@@ -29,36 +29,38 @@ CREATE TABLE estoque_farmacia (
     quantidade_atual INT NOT NULL
 );
 
+-- PACIENTE: Mantém o id SERIAL próprio e o usuario_id separado, pois é uma Associação (Tem um Usuário)
 CREATE TABLE paciente (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(150) NOT NULL,
     cpf VARCHAR(14) UNIQUE NOT NULL,
     data_nascimento DATE NOT NULL,
-    endereco_cep VARCHAR(9),          
+    endereco_cep VARCHAR(9),
+    ativo BOOLEAN DEFAULT TRUE,      
     usuario_id INT UNIQUE REFERENCES usuario(id), 
     convenio_id INT REFERENCES convenio(id)      
 );
 
+-- COORDENADOR: Herança. O ID dele é exatamente o mesmo ID da tabela Usuário.
 CREATE TABLE coordenador (
-    id SERIAL PRIMARY KEY,
+    id INT PRIMARY KEY REFERENCES usuario(id),
     nome VARCHAR(150) NOT NULL,
-    setor_responsavel VARCHAR(100) NOT NULL,
-    usuario_id INT UNIQUE REFERENCES usuario(id) NOT NULL 
+    setor_responsavel VARCHAR(100) NOT NULL
 );
 
+-- ENFERMEIRO: Herança. O ID dele é exatamente o mesmo ID da tabela Usuário.
 CREATE TABLE enfermeiro (
-    id SERIAL PRIMARY KEY,
+    id INT PRIMARY KEY REFERENCES usuario(id),
     nome VARCHAR(150) NOT NULL,
-    coren VARCHAR(20) UNIQUE NOT NULL,
-    usuario_id INT UNIQUE REFERENCES usuario(id) NOT NULL 
+    coren VARCHAR(20) UNIQUE NOT NULL
 );
 
+-- MEDICO: Herança. O ID dele é exatamente o mesmo ID da tabela Usuário.
 CREATE TABLE medico (
-    id SERIAL PRIMARY KEY,
+    id INT PRIMARY KEY REFERENCES usuario(id),
     nome VARCHAR(150) NOT NULL,
     crm VARCHAR(20) UNIQUE NOT NULL,
-    especialidade_medica_id INT REFERENCES especialidade_medica(id) NOT NULL,
-    usuario_id INT UNIQUE REFERENCES usuario(id) NOT NULL 
+    especialidade_medica_id INT REFERENCES especialidade_medica(id) NOT NULL
 );
 
 CREATE TABLE plantao (
@@ -149,4 +151,3 @@ CREATE TABLE administracao_enfermagem (
     prescricao_medica_id INT REFERENCES prescricao_medica(id) NOT NULL,
     enfermeiro_id INT REFERENCES enfermeiro(id) NOT NULL
 );
-

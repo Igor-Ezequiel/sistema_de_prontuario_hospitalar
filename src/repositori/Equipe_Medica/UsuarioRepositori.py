@@ -78,7 +78,7 @@ class UsuarioRepositori:
         self.db.commit()
 
     def desativar_usuario(self, id_usuario: int):
-        # Soft Delete: mantém o histórico no banco, mas bloqueia o acesso
+    
         sql = "UPDATE usuario SET ativo = :ativo WHERE id = :id"
         self.db.execute(sql, {"ativo": False, "id": id_usuario})
         self.db.commit()

@@ -1,5 +1,6 @@
 from src.models.Classes import Paciente
-from repositori.Equipe_Medica.UsuarioRepositori import UsuarioRepositori
+from src.repositori.Equipe_Medica.UsuarioRepositori import UsuarioRepositori
+
 
 class PacienteRepositori:
 
@@ -25,7 +26,7 @@ class PacienteRepositori:
 
     def buscar_por_id(self, id_paciente: int) -> Paciente:
         sql = """
-            SELECT id, nome, cpf, data_nascimento, usuario_id
+            SELECT id, nome, cpf, data_nascimento, usuario_id, ativo
             FROM paciente
             WHERE id = :id
         """
@@ -39,7 +40,8 @@ class PacienteRepositori:
             nome=linha.nome,
             cpf=linha.cpf,
             data_nascimento=linha.data_nascimento,
-            usuario_id=linha.usuario_id
+            usuario_id=linha.usuario_id,
+            ativo=linha.ativo
         )
 
         if paciente.usuario_id:
@@ -49,7 +51,7 @@ class PacienteRepositori:
 
     def buscar_por_cpf(self, cpf: str) -> Paciente:
         sql = """
-            SELECT id, nome, cpf, data_nascimento, usuario_id
+            SELECT id, nome, cpf, data_nascimento, usuario_id, ativo
             FROM paciente
             WHERE cpf = :cpf
         """
@@ -63,7 +65,8 @@ class PacienteRepositori:
             nome=linha.nome,
             cpf=linha.cpf,
             data_nascimento=linha.data_nascimento,
-            usuario_id=linha.usuario_id
+            usuario_id=linha.usuario_id,
+            ativo=linha.ativo
         )
 
         if paciente.usuario_id:
@@ -90,6 +93,7 @@ class PacienteRepositori:
         self.db.commit()
 
     def excluir_paciente(self, id_paciente: int):
-        sql = "DELETE FROM paciente WHERE id = :id"
+        # Soft delete: apenas inativa o registro em vez de remover a linha.
+        sql = "UPDATE paciente SET ativo = FALSE WHERE id = :id"
         self.db.execute(sql, {"id": id_paciente})
         self.db.commit()

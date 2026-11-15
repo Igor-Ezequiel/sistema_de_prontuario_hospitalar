@@ -98,17 +98,17 @@ class Paciente:
         nome: str, 
         cpf: str, 
         data_nascimento, 
-        usuario_id: int = None
+        usuario_id: int = None,
+        ativo: bool = True  # <--- AQUI: O objeto agora nasce sabendo se está ativo
     ):
         self.id = id_paciente
         self.nome = nome
         self.cpf = cpf
         self.data_nascimento = data_nascimento
-        
-        
         self.usuario_id = usuario_id
+        
+        self.ativo = ativo  # <--- AQUI
         self.usuario = None
-
 
 
 class Plantao:

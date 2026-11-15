@@ -9,6 +9,7 @@ from src.models.Classes import (
     CorRisco,
     Atendimento,
 )
+
 from src.exceptions import (
     NaoEncontradoError, 
     RegraDeNegocioError, 
@@ -32,6 +33,7 @@ class AtendimentoService:
         
 
     def criar_atendimento(self, paciente_id: int) -> int:
+        
         nova_ficha = Atendimento(
             atendimento_id=None,
             status=StatusAtendimento.AGUARDANDO_TRIAGEM.value,
@@ -47,6 +49,7 @@ class AtendimentoService:
     
     
     def buscar_atendimento(self, atendimento_id: int) -> Atendimento:
+        
         ficha = self.repositori.buscar_simples_por_id(atendimento_id)
 
         if ficha is None:
@@ -56,6 +59,7 @@ class AtendimentoService:
 
 
     def buscar_prontuario(self, atendimento_id: int) -> Atendimento:
+        
         prontuario = self.repositori.buscar_prontuario(atendimento_id)
 
         if prontuario is None:
@@ -65,6 +69,7 @@ class AtendimentoService:
 
 
     def buscar_prontuario_para_auditoria(self, atendimento_id: int) -> Atendimento:
+        
         prontuario = self.repositori.buscar_prontuario_para_auditoria(atendimento_id)
 
         if prontuario is None:
@@ -74,6 +79,7 @@ class AtendimentoService:
     
     
     def Classificar_Risco(self, atendimento_id: int, nova_cor: CorRisco):
+        
         ficha = self.repositori.buscar_simples_por_id(atendimento_id)
         
         if ficha is None:
@@ -92,6 +98,7 @@ class AtendimentoService:
     
     
     def dar_alta(self, atendimento_id: int, medico_id: int):
+        
         ficha = self.repositori.buscar_simples_por_id(atendimento_id)
     
         if ficha is None:
@@ -113,6 +120,7 @@ class AtendimentoService:
         
         
     def Deletar_Atendimento(self, atendimento_id: int):
+        
         ficha = self.repositori.buscar_simples_por_id(atendimento_id)
         
         if ficha is None:
@@ -125,6 +133,7 @@ class AtendimentoService:
         
         
     def Chamar_Paciente(self, medico_id: int) -> Atendimento:
+        
         hora_atual = datetime.now()
         medico_plantao = self.repositori_plantao.verificar_plantao_ativo(medico_id, hora_atual)
             
@@ -142,6 +151,7 @@ class AtendimentoService:
     
     
     def conceder_permissao_extra(self, atendimento_id: int, coordenador_id: int, medico_id: int, motivo: str) -> Atendimento:
+        
         ficha = self.repositori.buscar_simples_por_id(atendimento_id)
         
         if ficha is None:

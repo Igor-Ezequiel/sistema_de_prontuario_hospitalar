@@ -33,7 +33,6 @@ class StatusPrescricao(str, Enum):
     CANCELADA = "Cancelada"
 
 
-
 class Usuario:
     def __init__(self, id_usuario: int, email: str, senha: str, cargo: str, ativo: bool = True):
         self.id = id_usuario
@@ -99,7 +98,7 @@ class Paciente:
         cpf: str, 
         data_nascimento, 
         usuario_id: int = None,
-        ativo: bool = True  # <--- AQUI: O objeto agora nasce sabendo se está ativo
+        ativo: bool = True
     ):
         self.id = id_paciente
         self.nome = nome
@@ -107,7 +106,7 @@ class Paciente:
         self.data_nascimento = data_nascimento
         self.usuario_id = usuario_id
         
-        self.ativo = ativo  # <--- AQUI
+        self.ativo = ativo
         self.usuario = None
 
 

@@ -2,23 +2,19 @@ import psycopg2
 from psycopg2.extensions import connection
 from psycopg2 import OperationalError
 from src.config import settings
+from src.exceptions import BancoDeDadosError
 
-def inciar_conexao() -> connection:
+def iniciar_conexao() -> connection:
     
     try:
         conexao = psycopg2.connect(
-            
-            host = settings.DB_HOST,
-            port = settings.DB_PORT,
-            name = settings.DB_NAME,
-            user = settings.DB_USER,
-            password = settings.DB_PASSWORD
+            host=settings.DB_HOST,
+            port=settings.DB_PORT,
+            dbname=settings.DB_NAME, 
+            user=settings.DB_USER,
+            password=settings.DB_PASSWORD
         )
         return conexao
-        
+
     except OperationalError as e:
-        
-        print(f"Falha de comunicação com o PostgreSQL: {e}")
-        raise e
-        
-        
+        raise BancoDeDadosError(f"Falha de comunicação com o PostgreSQL: {e}")

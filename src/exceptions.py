@@ -13,3 +13,7 @@ class RegraDeNegocioError(HospitalError):
 class PermissaoNegadaError(HospitalError):
 
     pass
+
+class BancoDeDadosError(HospitalError):
+
+    pass

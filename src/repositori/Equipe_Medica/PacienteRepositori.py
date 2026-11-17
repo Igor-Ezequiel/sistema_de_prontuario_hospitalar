@@ -1,7 +1,6 @@
 from src.models.Classes import Paciente
 from src.repositori.Equipe_Medica.UsuarioRepositori import UsuarioRepositori
 
-
 class PacienteRepositori:
 
     def __init__(self, db_conexao):
@@ -93,7 +92,7 @@ class PacienteRepositori:
         self.db.commit()
 
     def excluir_paciente(self, id_paciente: int):
-        # Soft delete: apenas inativa o registro em vez de remover a linha.
+        
         sql = "UPDATE paciente SET ativo = FALSE WHERE id = :id"
         self.db.execute(sql, {"id": id_paciente})
         self.db.commit()

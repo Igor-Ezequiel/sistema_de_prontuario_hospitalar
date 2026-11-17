@@ -12,7 +12,8 @@ class UsuarioService:
     def __init__(self, usuario_repositorio: UsuarioRepositori):
         self.repositori_usuario = usuario_repositorio
 
-    def fazer_login(self, email: str, senha_digitada: str) -> Usuario:
+    def fazer_login(self, email: str, senha: str) -> Usuario:
+        
         usuario = self.repositori_usuario.buscar_por_email(email)
         
         if not usuario:
@@ -21,17 +22,17 @@ class UsuarioService:
         if not usuario.ativo:
             raise PermissaoNegadaError("Usuário está inativo no sistema!")
         
-        if not verificar_senha(senha_digitada, usuario.senha):
+        if not verificar_senha(senha, usuario.senha):
             raise PermissaoNegadaError("E-mail ou senha incorretos!")
         
         return usuario
 
-    def Criar_Usuario(self, email: str, senha_plana: str, cargo: str, ativo: bool = True) -> int:
+    def Criar_Usuario(self, email: str, senha: str, cargo: str, ativo: bool = True) -> int:
         
         if self.repositori_usuario.buscar_por_email(email):
             raise RegraDeNegocioError("Este e-mail já está cadastrado.")
 
-        senha_hash = gerar_hash_senha(senha_plana)
+        senha_hash = gerar_hash_senha(senha)
 
         novo_usuario = Usuario(
             id_usuario=None,
@@ -51,18 +52,18 @@ class UsuarioService:
             
         return usuario
 
-    def Atualizar_Credenciais(self, id_usuario: int, novo_email: str, nova_senha_plana: str = None):
+    def Atualizar_Credenciais(self, id_usuario: int, email: str, senha: str = None):
         
         usuario = self.Buscar_Usuario(id_usuario)
 
-        if novo_email != usuario.email:
-            email_em_uso = self.repositori_usuario.buscar_por_email(novo_email)
+        if email != usuario.email:
+            email_em_uso = self.repositori_usuario.buscar_por_email(email)
             if email_em_uso:
                 raise RegraDeNegocioError("Este e-mail já está sendo usado por outro usuário.")
-            usuario.email = novo_email
+            usuario.email = email
 
-        if nova_senha_plana:
-            usuario.senha = gerar_hash_senha(nova_senha_plana)
+        if senha:
+            usuario.senha = gerar_hash_senha(senha)
             
         self.repositori_usuario.atualizar_usuario(usuario)
 

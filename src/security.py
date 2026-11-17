@@ -22,10 +22,10 @@ def gerar_hash_senha(senha: str) -> str:
     return hash_bytes.hex()
 
 
-def verificar_senha(senha_plana_digitada: str, hash_salvo_no_banco: str) -> bool:
+def verificar_senha(senha: str, hash_salvo_no_banco: str) -> bool:
     
-    if not senha_plana_digitada or len(senha_plana_digitada) < 6:
+    if not senha or len(senha) < 6:
         return False
 
-    tentativa_hash = gerar_hash_senha(senha_plana_digitada)
+    tentativa_hash = gerar_hash_senha(senha)
     return hmac.compare_digest(tentativa_hash, hash_salvo_no_banco)

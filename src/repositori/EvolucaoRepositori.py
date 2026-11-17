@@ -1,4 +1,4 @@
-from src.models.Classes import Evolucao, CID
+from src.models.Classes import Evolucao, CID, Prescricao
 
 class EvolucaoRepositori:
     
@@ -97,6 +97,31 @@ class EvolucaoRepositori:
                 
         return lista_cids
     
+    def buscar_prescricoes_por_evolucao(self, evolucao_id: int) -> list[Prescricao]:
+        sql = """
+            SELECT id, nome_medicamento, dose, intervalo_horas, 
+                   status, evolucao_id, enfermeiro_id, data_hora_aplicacao
+            FROM prescricao
+            WHERE evolucao_id = :id
+        """
+        linhas = self.db.execute(sql, {"id": evolucao_id}).fetchall()
+        
+        lista_prescricoes = []
+        for p in linhas:
+            prescricao_obj = Prescricao(
+                id_prescricao=p.id,
+                nome_medicamento=p.nome_medicamento,
+                dose=p.dose,
+                intervalo_horas=p.intervalo_horas,
+                status=p.status,
+                evolucao_id=p.evolucao_id,
+                enfermeiro_id=p.enfermeiro_id,
+                data_hora_aplicacao=p.data_hora_aplicacao
+            )
+            lista_prescricoes.append(prescricao_obj)
+            
+        return lista_prescricoes
+    
     def buscar_historico_por_atendimento(self, atendimento_id: int) -> list[Evolucao]:
         
         sql = """
@@ -122,6 +147,8 @@ class EvolucaoRepositori:
             )
             
             evolucao.diagnosticos = self.buscar_diagnosticos_por_evolucao(evolucao.id)
+            
+            evolucao.prescricoes = self.buscar_prescricoes_por_evolucao(evolucao.id)
             
             historico.append(evolucao)
 

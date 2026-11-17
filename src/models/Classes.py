@@ -213,5 +213,4 @@ class Atendimento:
         self.medico = None
         self.triagens = []
         self.evolucoes = []
-        self.fotos_anexadas = []  
         self.permissoes_extras = []

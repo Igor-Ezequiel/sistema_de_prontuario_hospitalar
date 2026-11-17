@@ -104,6 +104,9 @@ class EvolucaoService:
             raise NaoEncontradoError("Evolução clínica não encontrada no sistema.")
 
         evolucao.diagnosticos = self.evolucao_repo.buscar_diagnosticos_por_evolucao(id_evolucao)
+        
+        evolucao.prescricoes = self.evolucao_repo.buscar_prescricoes_por_evolucao(id_evolucao)
+        
         return evolucao
 
     def buscar_historico_por_atendimento(self, atendimento_id: int) -> list[Evolucao]:

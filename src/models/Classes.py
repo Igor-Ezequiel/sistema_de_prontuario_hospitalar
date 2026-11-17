@@ -6,7 +6,6 @@ class StatusAtendimento(str, Enum):
     EM_ATENDIMENTO = "Em Atendimento"
     ALTA = "Alta"
     CANCELADO = "Cancelado"
-    
         
 class CorRisco(str, Enum):
     VERMELHO = "Vermelho"
@@ -17,9 +16,7 @@ class CorRisco(str, Enum):
     CINZA = "Cinza"
     
     def DefinirPeso(self) -> int:
-        
         match self.value:
-        
             case "Vermelho" : return 9
             case "Laranja" : return 8
             case "Amarelo" : return 7
@@ -32,7 +29,6 @@ class StatusPrescricao(str, Enum):
     APLICADA = "Aplicada"
     CANCELADA = "Cancelada"
 
-
 class Usuario:
     def __init__(self, id_usuario: int, email: str, senha: str, cargo: str, ativo: bool = True):
         self.id = id_usuario
@@ -40,7 +36,6 @@ class Usuario:
         self.senha = senha
         self.cargo = cargo
         self.ativo = ativo
-
 
 class Coordenador(Usuario):
     def __init__(
@@ -52,11 +47,9 @@ class Coordenador(Usuario):
         senha: str = None, 
         ativo: bool = True
     ):
-        
         super().__init__(id_coordenador, email, senha, cargo="Coordenador", ativo=ativo)
         self.nome = nome
         self.setor_responsavel = setor_responsavel
-
 
 class Enfermeiro(Usuario):
     def __init__(
@@ -71,7 +64,6 @@ class Enfermeiro(Usuario):
         super().__init__(id_enfermeiro, email, senha, cargo="Enfermeiro", ativo=ativo)
         self.nome = nome
         self.coren = coren
-
 
 class Medico(Usuario):
     def __init__(
@@ -88,7 +80,6 @@ class Medico(Usuario):
         self.nome = nome
         self.crm = crm
         self.especialidade = especialidade  
-
 
 class Paciente:
     def __init__(
@@ -109,7 +100,6 @@ class Paciente:
         self.ativo = ativo
         self.usuario = None
 
-
 class Plantao:
     def __init__(
         self, 
@@ -126,26 +116,9 @@ class Plantao:
         self.data_hora_fim = data_hora_fim
         self.medico_id = medico_id
         self.coordenador_id = coordenador_id
-
     
         self.medico = None
         self.coordenador = None
-
-
-class EstoqueFarmacia:
-    def __init__(
-        self, 
-        id_estoque: int, 
-        nome_remedio: str, 
-        miligramas: float, 
-        quantidade_atual: int
-    ):
-        self.id = id_estoque
-        self.nome_remedio = nome_remedio
-        self.miligramas = miligramas
-        self.quantidade_atual = quantidade_atual
-
-
 
 class Triagem:
     def __init__(
@@ -165,50 +138,30 @@ class Triagem:
         self.data_hora = data_hora
         self.atendimento_id = atendimento_id
         self.enfermeiro_id = enfermeiro_id
-
         self.enfermeiro = None
-
-
-class AdministracaoEnfermagem:
-    def __init__(
-        self, 
-        id_administracao: int, 
-        data_hora_aplicacao, 
-        prescricao_id: int, 
-        enfermeiro_id: int, 
-        observacao_reacao: str = None  
-    ):
-        self.id = id_administracao
-        self.data_hora_aplicacao = data_hora_aplicacao
-        self.observacao_reacao = observacao_reacao
-        self.prescricao_id = prescricao_id
-        self.enfermeiro_id = enfermeiro_id
-
-        self.enfermeiro = None
-
 
 class Prescricao:
     def __init__(
         self, 
         id_prescricao: int, 
-        dose: float, 
+        nome_medicamento: str, 
+        dose: str, 
         intervalo_horas: int, 
         status: str,
         evolucao_id: int = None,
-        estoque_farmacia_id: int = None,
-        nome_remedio: str = None
+        enfermeiro_id: int = None,
+        data_hora_aplicacao = None
     ):
         self.id = id_prescricao
+        self.nome_medicamento = nome_medicamento
         self.dose = dose
         self.intervalo_horas = intervalo_horas
         self.status = status
         self.evolucao_id = evolucao_id
-        self.estoque_farmacia_id = estoque_farmacia_id
-        self.nome_remedio = nome_remedio 
+        self.enfermeiro_id = enfermeiro_id
+        self.data_hora_aplicacao = data_hora_aplicacao
 
-        self.item_estoque = None
-        self.administracoes = []
-
+        self.enfermeiro = None 
 
 class Evolucao:
     def __init__(
@@ -228,7 +181,6 @@ class Evolucao:
         self.atendimento_id = atendimento_id
         self.medico_id = medico_id
         self.medico_autor = medico_autor
-
       
         self.diagnosticos = []  
         self.prescricoes = []  
@@ -249,7 +201,6 @@ class Atendimento:
         data_alta=None,            
         medico_id: int = None     
     ):
-    
         self.id = atendimento_id
         self.status = status
         self.cor_risco = cor_risco
@@ -260,8 +211,7 @@ class Atendimento:
 
         self.paciente = None
         self.medico = None
-
         self.triagens = []
         self.evolucoes = []
         self.fotos_anexadas = []  
-        self.permissoes_extras = [] 
+        self.permissoes_extras = []

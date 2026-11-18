@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from src.schemas.clinico_schema import TriagemCreate, TriagemUpdate, TriagemResponse
-from repositori.TriagemRepository import TriagemRepositori
+from src.repositori.TriagemRepository import TriagemRepositori
 from src.repositori.AtendimentoRepository import AtendimentoRepository
 from src.service.TriagemService import TriagemService
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError

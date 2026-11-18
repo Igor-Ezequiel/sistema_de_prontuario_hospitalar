@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from src.schemas.clinico_schema import PrescricaoCreate, PrescricaoAplicar, PrescricaoResponse
-from repositori.PrecricaoRepository import PrescricaoRepositori
+from src.repositori.PrecricaoRepository import PrescricaoRepositori
 from src.service.PrecricaoService import PrescricaoService
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 from src.deps import get_db

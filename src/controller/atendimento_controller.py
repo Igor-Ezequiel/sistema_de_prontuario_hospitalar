@@ -8,9 +8,9 @@ from src.schemas.atendimento_schema import (
     AtendimentoResponse
 )
 from src.repositori.AtendimentoRepository import AtendimentoRepository
-from repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
-from repositori.PlantaoRepository import PlantaoRepositori
-from repositori.PermissaoExtraRepository import PermissaoExtraRepositori
+from src.repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
+from src.repositori.PlantaoRepository import PlantaoRepositori
+from src.repositori.PermissaoExtraRepository import PermissaoExtraRepositori
 from src.service.AtendimentoService import AtendimentoService
 from src.service.SistemaFilaPrioridade import fila_hospital
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError, PermissaoNegadaError

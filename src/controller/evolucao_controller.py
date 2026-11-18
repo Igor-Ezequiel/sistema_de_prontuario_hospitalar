@@ -1,34 +1,103 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from src.schemas.clinico_schema import EvolucaoCreate, EvolucaoUpdate
+from typing import List
+from src.schemas.clinico_schema import (
+    EvolucaoCreate,
+    EvolucaoUpdate,
+    DiagnosticoVincular,
+    EvolucaoResponse,
+    CIDResponse
+)
 from src.repositori.EvolucaoRepositori import EvolucaoRepositori
 from src.repositori.AtendimentoRepositori import AtendimentoRepository
 from src.repositori.CID_Repositori import CIDRepository
-from src.services.EvolucaoService import EvolucaoService
-from src.exceptions import RegraDeNegocioError, NaoEncontradoError, PermissaoNegadaError
+from src.service.EvolucaoService import EvolucaoService
+from src.exceptions import NaoEncontradoError, RegraDeNegocioError, PermissaoNegadaError
 from src.deps import get_db
 
 router = APIRouter(prefix="/evolucoes", tags=["Clínico - Evoluções"])
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
-def registrar(dados: EvolucaoCreate, db = Depends(get_db)):
-    try:
-        service = EvolucaoService(EvolucaoRepositori(db), AtendimentoRepository(db), CIDRepository(db))
-        nova_evo = service.registrar_nova_evolucao(
-            dados.atendimento_id, dados.medico_id, dados.relato, dados.dias_entubacao, dados.lista_cids
-        )
-        return {"mensagem": "Evolução registrada", "id": nova_evo.id}
-    except (RegraDeNegocioError, NaoEncontradoError, PermissaoNegadaError) as e:
-        codigo = status.HTTP_403_FORBIDDEN if isinstance(e, PermissaoNegadaError) else (
-            status.HTTP_404_NOT_FOUND if isinstance(e, NaoEncontradoError) else status.HTTP_400_BAD_REQUEST)
-        raise HTTPException(status_code=codigo, detail=str(e))
+def obter_service(db) -> EvolucaoService:
+    return EvolucaoService(
+        evolucao_repo=EvolucaoRepositori(db),
+        atendimento_repo=AtendimentoRepository(db),
+        cid_repo=CIDRepository(db)
+    )
 
-@router.put("/{id_evolucao}")
-def editar(id_evolucao: int, dados: EvolucaoUpdate, db = Depends(get_db)):
+@router.post("/", response_model=EvolucaoResponse, status_code=status.HTTP_201_CREATED)
+def registrar_nova_evolucao(dados: EvolucaoCreate, db = Depends(get_db)):
     try:
-        service = EvolucaoService(EvolucaoRepositori(db), AtendimentoRepository(db), CIDRepository(db))
-        service.atualizar_evolucao(id_evolucao, dados.medico_id, dados.relato, dados.dias_entubacao)
-        return {"mensagem": "Evolução atualizada com sucesso"}
-    except (RegraDeNegocioError, NaoEncontradoError, PermissaoNegadaError) as e:
-        codigo = status.HTTP_403_FORBIDDEN if isinstance(e, PermissaoNegadaError) else (
-            status.HTTP_404_NOT_FOUND if isinstance(e, NaoEncontradoError) else status.HTTP_400_BAD_REQUEST)
-        raise HTTPException(status_code=codigo, detail=str(e))
+        service = obter_service(db)
+        return service.registrar_nova_evolucao(
+            atendimento_id=dados.atendimento_id,
+            medico_id=dados.medico_id,
+            relato=dados.relato,
+            dias_entubacao=dados.dias_entubacao,
+            lista_cids=dados.lista_cids
+        )
+    except PermissaoNegadaError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+    except NaoEncontradoError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except RegraDeNegocioError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+@router.post("/{id_evolucao}/diagnosticos", response_model=CIDResponse, status_code=status.HTTP_201_CREATED)
+def vincular_novo_diagnostico(id_evolucao: int, dados: DiagnosticoVincular, db = Depends(get_db)):
+    try:
+        service = obter_service(db)
+        return service.vincular_novo_diagnostico(
+            id_evolucao=id_evolucao,
+            medico_id=dados.medico_id,
+            codigo_cid=dados.codigo_cid
+        )
+    except PermissaoNegadaError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+    except NaoEncontradoError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except RegraDeNegocioError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+@router.get("/{id_evolucao}", response_model=EvolucaoResponse)
+def buscar_evolucao_por_id(id_evolucao: int, db = Depends(get_db)):
+    try:
+        service = obter_service(db)
+        return service.buscar_evolucao_por_id(id_evolucao)
+    except NaoEncontradoError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+@router.get("/atendimento/{atendimento_id}", response_model=List[EvolucaoResponse])
+def buscar_historico_por_atendimento(atendimento_id: int, db = Depends(get_db)):
+    try:
+        service = obter_service(db)
+        return service.buscar_historico_por_atendimento(atendimento_id)
+    except NaoEncontradoError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+@router.put("/{id_evolucao}", response_model=EvolucaoResponse)
+def atualizar_evolucao(id_evolucao: int, dados: EvolucaoUpdate, db = Depends(get_db)):
+    try:
+        service = obter_service(db)
+        return service.atualizar_evolucao(
+            id_evolucao=id_evolucao,
+            medico_id=dados.medico_id,
+            novo_relato=dados.novo_relato,
+            novos_dias_entubacao=dados.novos_dias_entubacao
+        )
+    except PermissaoNegadaError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+    except NaoEncontradoError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except RegraDeNegocioError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+@router.delete("/{id_evolucao}", status_code=status.HTTP_204_NO_CONTENT)
+def excluir_evolucao(id_evolucao: int, medico_id: int, db = Depends(get_db)):
+    """Recebe medico_id via Query Param (ex: DELETE /evolucoes/5?medico_id=2)"""
+    try:
+        service = obter_service(db)
+        service.excluir_evolucao(id_evolucao, medico_id)
+        return None
+    except PermissaoNegadaError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+    except NaoEncontradoError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

@@ -142,7 +142,7 @@ class AtendimentoService:
         
         proximo_da_fila = fila_hospital.Atender_Proximo_Paciente()
         
-        ficha = self.repositori.buscar_simples_por_id(proximo_da_fila.id)
+        ficha = self.repositori.buscar_simples_por_id(proximo_da_fila)
         ficha.status = StatusAtendimento.EM_ATENDIMENTO.value
         ficha.medico_id = medico_id
         self.repositori.atualizar_dados_atendimento(ficha)

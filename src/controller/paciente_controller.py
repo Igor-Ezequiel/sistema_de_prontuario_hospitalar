@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from src.schemas.paciente_schema import PacienteCreate, PacienteUpdate, PacienteResponse
-from src.repositori.Equipe_Medica.PacienteRepositori import PacienteRepositori
-from src.repositori.Equipe_Medica.UsuarioRepositori import UsuarioRepositori
+from repositori.Equipe_Medica.PacienteRepository import PacienteRepositori
+from repositori.Equipe_Medica.UsuarioRepository import UsuarioRepositori
 from src.service.PacienteService import PacienteService
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 from src.deps import get_db

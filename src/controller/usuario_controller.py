@@ -5,7 +5,7 @@ from src.schemas.equipe_schema import (
     UsuarioCredenciaisUpdate, 
     UsuarioResponse
 )
-from src.repositori.Equipe_Medica.UsuarioRepositori import UsuarioRepositori
+from repositori.Equipe_Medica.UsuarioRepository import UsuarioRepositori
 from src.service.UsuarioService import UsuarioService
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError, PermissaoNegadaError
 from src.deps import get_db

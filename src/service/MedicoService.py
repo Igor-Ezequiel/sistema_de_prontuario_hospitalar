@@ -1,6 +1,6 @@
 from datetime import datetime
 from src.models.Classes import Medico
-from src.repositori.Equipe_Medica.MedicoRepositori import MedicoRepositori
+from repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
 from src.security import gerar_hash_senha
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 

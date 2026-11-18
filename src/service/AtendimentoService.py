@@ -1,9 +1,9 @@
 from datetime import datetime
 from src.service.SistemaFilaPrioridade import fila_hospital
-from src.repositori.AtendimentoRepositori import AtendimentoRepository
-from src.repositori.PlantaoRepositori import PlantaoRepositori
-from src.repositori.PermissaoExtraRepositori import PermissaoExtraRepositori
-from src.repositori.Equipe_Medica.MedicoRepositori import MedicoRepositori
+from repositori.AtendimentoRepository import AtendimentoRepository
+from repositori.PlantaoRepository import PlantaoRepositori
+from repositori.PermissaoExtraRepository import PermissaoExtraRepositori
+from repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
 from src.models.Classes import (
     StatusAtendimento,
     CorRisco,

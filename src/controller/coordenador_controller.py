@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from src.schemas.equipe_schema import CoordenadorCreate, CoordenadorUpdate, CoordenadorResponse
-from src.repositori.Equipe_Medica.CoordenadorRepositori import CoordenadorRepositori
+from repositori.Equipe_Medica.CoordenadorRepository import CoordenadorRepositori
 from src.service.CoordenadorService import CoordenadorService
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 from src.deps import get_db

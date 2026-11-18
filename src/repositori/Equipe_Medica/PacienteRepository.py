@@ -1,5 +1,5 @@
 from src.models.Classes import Paciente
-from src.repositori.Equipe_Medica.UsuarioRepositori import UsuarioRepositori
+from src.repositori.Equipe_Medica.UsuarioRepository import UsuarioRepositori
 
 class PacienteRepositori:
 

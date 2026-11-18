@@ -4,9 +4,7 @@ CREATE TABLE cid (
     descricao VARCHAR(255) NOT NULL
 );
 
--- ==========================================
--- EQUIPE MÉDICA E USUÁRIOS (HERANÇA)
--- ==========================================
+
 
 CREATE TABLE usuario (
     id SERIAL PRIMARY KEY,
@@ -36,9 +34,6 @@ CREATE TABLE medico (
     especialidade_medica_id VARCHAR(100)
 );
 
--- ==========================================
--- PACIENTES E RECEPÇÃO
--- ==========================================
 
 CREATE TABLE paciente (
     id SERIAL PRIMARY KEY,
@@ -48,7 +43,7 @@ CREATE TABLE paciente (
     endereco_cep VARCHAR(9),
     ativo BOOLEAN DEFAULT TRUE,      
     usuario_id INT UNIQUE REFERENCES usuario(id), 
-    convenio_id INT REFERENCES convenio(id)      
+         
 );
 
 CREATE TABLE plantao (
@@ -70,9 +65,7 @@ CREATE TABLE atendimento (
     medico_id INT REFERENCES medico(id)               
 );
 
--- ==========================================
--- FLUXO CLÍNICO (TRIAGEM, EVOLUÇÃO, PRESCRIÇÃO)
--- ==========================================
+
 
 CREATE TABLE triagem (
     id SERIAL PRIMARY KEY,
@@ -112,9 +105,7 @@ CREATE TABLE prescricao (
     data_hora_aplicacao TIMESTAMP
 );
 
--- ==========================================
--- AUDITORIA E EXTRAS
--- ==========================================
+
 
 CREATE TABLE permissao_extra (
     id SERIAL PRIMARY KEY,

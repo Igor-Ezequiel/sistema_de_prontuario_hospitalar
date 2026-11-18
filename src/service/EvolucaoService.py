@@ -1,8 +1,8 @@
 from datetime import datetime
 from src.models.Classes import Evolucao, CID, StatusAtendimento
-from src.repositori.EvolucaoRepositori import EvolucaoRepositori
-from src.repositori.AtendimentoRepositori import AtendimentoRepository
-from src.repositori.CID_Repositori import CIDRepository
+from repositori.EvolucaoRepository import EvolucaoRepositori
+from repositori.AtendimentoRepository import AtendimentoRepository
+from repositori.CID_Repository import CIDRepository
 from src.exceptions import (
     NaoEncontradoError,
     RegraDeNegocioError,

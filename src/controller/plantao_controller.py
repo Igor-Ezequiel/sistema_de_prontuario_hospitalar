@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from src.schemas.atendimento_schema import PlantaoCreate, PlantaoUpdate, PlantaoResponse
-from src.repositori.PlantaoRepositori import PlantaoRepositori
-from src.repositori.Equipe_Medica.MedicoRepositori import MedicoRepositori
+from repositori.PlantaoRepository import PlantaoRepositori
+from repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
 from src.service.PlantaoService import PlantaoService
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 from src.deps import get_db

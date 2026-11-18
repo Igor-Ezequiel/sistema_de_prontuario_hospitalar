@@ -1,6 +1,6 @@
 from datetime import datetime
 from src.models.Classes import Prescricao, StatusPrescricao
-from src.repositori.PrecricaoRepositori import PrescricaoRepositori
+from repositori.PrecricaoRepository import PrescricaoRepositori
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 
 class PrescricaoService:

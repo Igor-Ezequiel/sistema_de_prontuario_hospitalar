@@ -1,6 +1,6 @@
 from src.models.Classes import Plantao, Medico, Coordenador
-from src.repositori.Equipe_Medica.MedicoRepositori import MedicoRepositori
-from src.repositori.Equipe_Medica.CoordenadorRepositori import CoordenadorRepositori
+from repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
+from repositori.Equipe_Medica.CoordenadorRepository import CoordenadorRepositori
 
 class PlantaoRepositori:
 

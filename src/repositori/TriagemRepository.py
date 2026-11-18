@@ -1,6 +1,6 @@
 from src.models.Classes import Enfermeiro, Triagem
 
-class TriagemRepository:
+class TriagemRepositori:
     def __init__(self, db_conexao):
         self.db = db_conexao
 

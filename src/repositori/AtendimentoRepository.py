@@ -5,9 +5,9 @@ from src.models.Classes import (
     StatusAtendimento  
 )
 
-from src.repositori.TriagemRepositori import TriagemRepository
-from src.repositori.EvolucaoRepositori import EvolucaoRepositori
-from src.repositori.PermissaoExtraRepositori import PermissaoExtraRepositori
+from repositori.TriagemRepository import TriagemRepository
+from repositori.EvolucaoRepository import EvolucaoRepositori
+from repositori.PermissaoExtraRepository import PermissaoExtraRepositori
 
 
 class AtendimentoRepository:

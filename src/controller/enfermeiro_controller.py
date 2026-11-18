@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from src.schemas.equipe_schema import EnfermeiroCreate, EnfermeiroUpdate, EnfermeiroResponse
-from src.repositori.Equipe_Medica.EnfermeiroRepositori import EnfermeiroRepositori
+from repositori.Equipe_Medica.EnfermeiroRepository import EnfermeiroRepositori
 from src.service.EnfermeiroService import EnfermeiroService
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 from src.deps import get_db

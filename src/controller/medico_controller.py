@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from datetime import datetime
 from typing import List
 from src.schemas.equipe_schema import MedicoCreate, MedicoUpdate, MedicoResponse
-from src.repositori.Equipe_Medica.MedicoRepositori import MedicoRepositori
+from repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
 from src.service.MedicoService import MedicoService
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 from src.deps import get_db

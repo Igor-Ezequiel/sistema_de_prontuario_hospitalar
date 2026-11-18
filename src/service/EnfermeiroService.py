@@ -1,5 +1,5 @@
 from src.models.Classes import Enfermeiro
-from src.repositori.Equipe_Medica.EnfermeiroRepositori import EnfermeiroRepositori
+from repositori.Equipe_Medica.EnfermeiroRepository import EnfermeiroRepositori
 from src.security import gerar_hash_senha
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 

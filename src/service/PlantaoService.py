@@ -1,6 +1,6 @@
 from src.models.Classes import Plantao
-from src.repositori.PlantaoRepositori import PlantaoRepositori
-from src.repositori.Equipe_Medica.MedicoRepositori import MedicoRepositori
+from repositori.PlantaoRepository import PlantaoRepositori
+from repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 
 

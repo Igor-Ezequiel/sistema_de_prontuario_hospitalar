@@ -1,4 +1,4 @@
-from src.repositori.Equipe_Medica.UsuarioRepositori import UsuarioRepositori
+from repositori.Equipe_Medica.UsuarioRepository import UsuarioRepositori
 from src.models.Classes import Usuario
 from src.security import gerar_hash_senha, verificar_senha
 from src.exceptions import (

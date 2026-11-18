@@ -13,9 +13,9 @@ from src.models.Classes import (
     StatusAtendimento,
     CorRisco
 )
-from src.repositori.AtendimentoRepositori import AtendimentoRepository
-from src.repositori.TriagemRepositori import TriagemRepository
-from src.repositori.EvolucaoRepositori import EvolucaoRepositori
+from repositori.AtendimentoRepository import AtendimentoRepository
+from repositori.TriagemRepository import TriagemRepository
+from repositori.EvolucaoRepository import EvolucaoRepositori
 
 
 # --- ADAPTADOR DE BANCO EM MEMÓRIA ---

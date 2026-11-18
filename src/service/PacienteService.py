@@ -1,6 +1,6 @@
 from src.models.Classes import Paciente
-from src.repositori.Equipe_Medica.PacienteRepositori import PacienteRepositori
-from src.repositori.Equipe_Medica.UsuarioRepositori import UsuarioRepositori
+from repositori.Equipe_Medica.PacienteRepository import PacienteRepositori
+from repositori.Equipe_Medica.UsuarioRepository import UsuarioRepositori
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 
 class PacienteService:

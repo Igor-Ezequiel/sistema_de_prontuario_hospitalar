@@ -1,11 +1,11 @@
 from datetime import datetime
 from src.models.Classes import Medico
-from repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
+from src.repositori.Equipe_Medica.MedicoRepository import MedicoRepository
 from src.security import gerar_hash_senha
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 
 class MedicoService:
-    def __init__(self, medico_repo: MedicoRepositori):
+    def __init__(self, medico_repo: MedicoRepository):
         self.medico_repo = medico_repo
 
     def cadastrar_medico(self, nome: str, crm: str, especialidade: str, email: str, senha_plana: str) -> int:

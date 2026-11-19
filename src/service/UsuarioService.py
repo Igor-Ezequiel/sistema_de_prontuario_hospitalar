@@ -1,4 +1,4 @@
-from repositori.Equipe_Medica.UsuarioRepository import UsuarioRepositori
+from src.repositori.Equipe_Medica.UsuarioRepository import UsuarioRepository
 from src.models.Classes import Usuario
 from src.security import gerar_hash_senha, verificar_senha
 from src.exceptions import (
@@ -9,7 +9,7 @@ from src.exceptions import (
 
 class UsuarioService:
     
-    def __init__(self, usuario_repositorio: UsuarioRepositori):
+    def __init__(self, usuario_repositorio: UsuarioRepository):
         self.repositori_usuario = usuario_repositorio
 
     def fazer_login(self, email: str, senha: str) -> Usuario:

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-class PermissaoExtraRepositori:
+class PermissaoExtraRepository:
     
     def inserir_permissao(self, atendimento_id: int, medico_id: int, coordenador_id: int, motivo: str) -> int: 
         

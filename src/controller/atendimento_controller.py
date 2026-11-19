@@ -8,9 +8,9 @@ from src.schemas.atendimento_schema import (
     AtendimentoResponse
 )
 from src.repositori.AtendimentoRepository import AtendimentoRepository
-from src.repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
-from src.repositori.PlantaoRepository import PlantaoRepositori
-from src.repositori.PermissaoExtraRepository import PermissaoExtraRepositori
+from src.repositori.Equipe_Medica.MedicoRepository import MedicoRepository
+from src.repositori.PlantaoRepository import PlantaoRepository
+from src.repositori.PermissaoExtraRepository import PermissaoExtraRepository
 from src.service.AtendimentoService import AtendimentoService
 from src.service.SistemaFilaPrioridade import fila_hospital
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError, PermissaoNegadaError
@@ -21,9 +21,9 @@ router = APIRouter(prefix="/atendimentos", tags=["Recepção e Fluxo de Atendime
 def obter_service(db) -> AtendimentoService:
     return AtendimentoService(
         repositori=AtendimentoRepository(db),
-        repositori_medico=MedicoRepositori(db),
-        repositori_plantao=PlantaoRepositori(db),
-        repositori_permissao_extra=PermissaoExtraRepositori(db)
+        repositori_medico=MedicoRepository(db),
+        repositori_plantao=PlantaoRepository(db),
+        repositori_permissao_extra=PermissaoExtraRepository(db)
     )
 
 @router.post("/", status_code=status.HTTP_201_CREATED)

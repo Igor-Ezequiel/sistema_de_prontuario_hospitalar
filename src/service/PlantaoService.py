@@ -1,12 +1,12 @@
 from src.models.Classes import Plantao
-from repositori.PlantaoRepository import PlantaoRepositori
-from repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
+from src.repositori.PlantaoRepository import PlantaoRepository
+from src.repositori.Equipe_Medica.MedicoRepository import MedicoRepository
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 
 
 class PlantaoService:
 
-    def __init__(self, plantao_repo: PlantaoRepositori, medico_repo: MedicoRepositori):
+    def __init__(self, plantao_repo: PlantaoRepository, medico_repo: MedicoRepository):
         self.plantao_repo = plantao_repo
         self.medico_repo = medico_repo
         

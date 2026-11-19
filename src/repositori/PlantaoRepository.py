@@ -1,14 +1,14 @@
 from src.models.Classes import Plantao, Medico, Coordenador
-from repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
-from repositori.Equipe_Medica.CoordenadorRepository import CoordenadorRepositori
+from src.repositori.Equipe_Medica.MedicoRepository import MedicoRepository
+from src.repositori.Equipe_Medica.CoordenadorRepository import CoordenadorRepository
 
-class PlantaoRepositori:
+class PlantaoRepository:
 
     def __init__(self, db_conexao):
         self.db = db_conexao
         
-        self.medico_repo = MedicoRepositori(db_conexao)
-        self.coordenador_repo = CoordenadorRepositori(db_conexao)
+        self.medico_repo = MedicoRepository(db_conexao)
+        self.coordenador_repo = CoordenadorRepository(db_conexao)
 
     def inserir_plantao(self, plantao: Plantao) -> int:
         sql = """

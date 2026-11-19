@@ -1,10 +1,10 @@
 from src.models.Classes import Enfermeiro
-from repositori.Equipe_Medica.EnfermeiroRepository import EnfermeiroRepositori
+from src.repositori.Equipe_Medica.EnfermeiroRepository import EnfermeiroRepository
 from src.security import gerar_hash_senha
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 
 class EnfermeiroService:
-    def __init__(self, enfermeiro_repo: EnfermeiroRepositori):
+    def __init__(self, enfermeiro_repo: EnfermeiroRepository):
         self.enfermeiro_repo = enfermeiro_repo
 
     def cadastrar_enfermeiro(self, nome: str, coren: str, email: str, senha_plana: str) -> int:

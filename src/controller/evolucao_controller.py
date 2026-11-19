@@ -7,7 +7,7 @@ from src.schemas.clinico_schema import (
     EvolucaoResponse,
     CIDResponse
 )
-from src.repositori.EvolucaoRepository import EvolucaoRepositori
+from src.repositori.EvolucaoRepository import EvolucaoRepository
 from src.repositori.AtendimentoRepository import AtendimentoRepository
 from src.repositori.CID_Repository import CIDRepository
 from src.service.EvolucaoService import EvolucaoService
@@ -18,7 +18,7 @@ router = APIRouter(prefix="/evolucoes", tags=["Clínico - Evoluções"])
 
 def obter_service(db) -> EvolucaoService:
     return EvolucaoService(
-        evolucao_repo=EvolucaoRepositori(db),
+        evolucao_repo=EvolucaoRepository(db),
         atendimento_repo=AtendimentoRepository(db),
         cid_repo=CIDRepository(db)
     )

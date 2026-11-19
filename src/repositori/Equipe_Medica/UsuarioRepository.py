@@ -1,6 +1,6 @@
 from src.models.Classes import Usuario
 
-class UsuarioRepositori:
+class UsuarioRepository:
 
     def __init__(self, db_conexao):
         self.db = db_conexao

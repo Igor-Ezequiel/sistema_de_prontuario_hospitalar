@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from src.schemas.clinico_schema import TriagemCreate, TriagemUpdate, TriagemResponse
-from src.repositori.TriagemRepository import TriagemRepositori
+from src.repositori.TriagemRepository import TriagemRepository
 from src.repositori.AtendimentoRepository import AtendimentoRepository
 from src.service.TriagemService import TriagemService
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
@@ -10,7 +10,7 @@ from src.deps import get_db
 router = APIRouter(prefix="/triagens", tags=["Clínico - Triagem"])
 
 def obter_service(db) -> TriagemService:
-    return TriagemService(TriagemRepositori(db), AtendimentoRepository(db))
+    return TriagemService(TriagemRepository(db), AtendimentoRepository(db))
 
 @router.post("/", response_model=TriagemResponse, status_code=status.HTTP_201_CREATED)
 def criar_triagem(dados: TriagemCreate, db = Depends(get_db)):

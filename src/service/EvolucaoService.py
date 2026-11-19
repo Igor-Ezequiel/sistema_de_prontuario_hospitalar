@@ -1,8 +1,8 @@
 from datetime import datetime
 from src.models.Classes import Evolucao, CID, StatusAtendimento
-from repositori.EvolucaoRepository import EvolucaoRepositori
-from repositori.AtendimentoRepository import AtendimentoRepository
-from repositori.CID_Repository import CIDRepository
+from src.repositori.EvolucaoRepository import EvolucaoRepository
+from src.repositori.AtendimentoRepository import AtendimentoRepository
+from src.repositori.CID_Repository import CIDRepository
 from src.exceptions import (
     NaoEncontradoError,
     RegraDeNegocioError,
@@ -13,7 +13,7 @@ class EvolucaoService:
     
     def __init__(
         self, 
-        evolucao_repo: EvolucaoRepositori, 
+        evolucao_repo: EvolucaoRepository, 
         atendimento_repo: AtendimentoRepository, 
         cid_repo: CIDRepository
     ):

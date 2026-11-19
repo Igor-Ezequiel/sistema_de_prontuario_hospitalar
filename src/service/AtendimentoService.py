@@ -1,9 +1,9 @@
 from datetime import datetime
 from src.service.SistemaFilaPrioridade import fila_hospital
-from repositori.AtendimentoRepository import AtendimentoRepository
-from repositori.PlantaoRepository import PlantaoRepositori
-from repositori.PermissaoExtraRepository import PermissaoExtraRepositori
-from repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
+from src.repositori.AtendimentoRepository import AtendimentoRepository
+from src.repositori.PlantaoRepository import PlantaoRepository
+from src.repositori.PermissaoExtraRepository import PermissaoExtraRepository
+from src.repositori.Equipe_Medica.MedicoRepository import MedicoRepository
 from src.models.Classes import (
     StatusAtendimento,
     CorRisco,
@@ -22,9 +22,9 @@ class AtendimentoService:
     def __init__(
         self, 
         repositori: AtendimentoRepository, 
-        repositori_medico: MedicoRepositori, 
-        repositori_plantao: PlantaoRepositori, 
-        repositori_permissao_extra: PermissaoExtraRepositori
+        repositori_medico: MedicoRepository, 
+        repositori_plantao: PlantaoRepository, 
+        repositori_permissao_extra: PermissaoExtraRepository
     ):
         self.repositori = repositori
         self.repositori_medico = repositori_medico

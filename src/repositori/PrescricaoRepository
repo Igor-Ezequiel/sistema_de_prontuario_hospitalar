@@ -1,6 +1,6 @@
 from src.models.Classes import Prescricao, Enfermeiro
 
-class PrescricaoRepositori:
+class PrescricaoRepository:
 
     def __init__(self, db_conexao):
         self.db = db_conexao

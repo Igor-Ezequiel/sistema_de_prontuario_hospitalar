@@ -1,12 +1,12 @@
 from src.models.Classes import Medico
-from repositori.Equipe_Medica.UsuarioRepository import UsuarioRepositori
+from src.repositori.Equipe_Medica.UsuarioRepository import UsuarioRepository
 
 
-class MedicoRepositori:
+class MedicoRepository:
 
     def __init__(self, db_conexao):
         self.db = db_conexao
-        self.usuario_repo = UsuarioRepositori(db_conexao)
+        self.usuario_repo = UsuarioRepository(db_conexao)
 
     def inserir_medico(self, medico: Medico) -> int:
         id_gerado = self.usuario_repo.inserir_usuario(medico)

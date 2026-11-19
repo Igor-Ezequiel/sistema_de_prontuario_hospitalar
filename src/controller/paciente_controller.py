@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from src.schemas.paciente_schema import PacienteCreate, PacienteUpdate, PacienteResponse
-from src.repositori.Equipe_Medica.PacienteRepository import PacienteRepositori
-from src.repositori.Equipe_Medica.UsuarioRepository import UsuarioRepositori
+from src.repositori.Equipe_Medica.PacienteRepository import PacienteRepository
+from src.repositori.Equipe_Medica.UsuarioRepository import UsuarioRepository
 from src.service.PacienteService import PacienteService
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 from src.deps import get_db
@@ -9,7 +9,7 @@ from src.deps import get_db
 router = APIRouter(prefix="/pacientes", tags=["Recepção - Pacientes"])
 
 def obter_service(db) -> PacienteService:
-    return PacienteService(PacienteRepositori(db), UsuarioRepositori(db))
+    return PacienteService(PacienteRepository(db), UsuarioRepository(db))
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def cadastrar_paciente(dados: PacienteCreate, db = Depends(get_db)):

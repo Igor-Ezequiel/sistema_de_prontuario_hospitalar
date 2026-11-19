@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from src.schemas.atendimento_schema import PlantaoCreate, PlantaoUpdate, PlantaoResponse
-from src.repositori.PlantaoRepository import PlantaoRepositori
-from src.repositori.Equipe_Medica.MedicoRepository import MedicoRepositori
+from src.repositori.PlantaoRepository import PlantaoRepository
+from src.repositori.Equipe_Medica.MedicoRepository import MedicoRepository
 from src.service.PlantaoService import PlantaoService
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 from src.deps import get_db
@@ -9,7 +9,7 @@ from src.deps import get_db
 router = APIRouter(prefix="/plantoes", tags=["Escala - Plantões"])
 
 def obter_service(db) -> PlantaoService:
-    return PlantaoService(PlantaoRepositori(db), MedicoRepositori(db))
+    return PlantaoService(PlantaoRepository(db), MedicoRepository(db))
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def alocar_medico_no_plantao(dados: PlantaoCreate, db = Depends(get_db)):

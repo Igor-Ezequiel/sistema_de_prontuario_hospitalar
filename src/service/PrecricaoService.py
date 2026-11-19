@@ -1,10 +1,10 @@
 from datetime import datetime
 from src.models.Classes import Prescricao, StatusPrescricao
-from repositori.PrecricaoRepository import PrescricaoRepositori
+from src.repositori.PrecricaoRepository import PrescricaoRepository
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 
 class PrescricaoService:
-    def __init__(self, prescricao_repo: PrescricaoRepositori):
+    def __init__(self, prescricao_repo: PrescricaoRepository):
         self.prescricao_repo = prescricao_repo
 
     def buscar_prescricao_valida(self, id_prescricao: int) -> Prescricao:

@@ -1,10 +1,10 @@
 from src.models.Classes import Paciente
-from repositori.Equipe_Medica.PacienteRepository import PacienteRepositori
-from repositori.Equipe_Medica.UsuarioRepository import UsuarioRepositori
+from src.repositori.Equipe_Medica.PacienteRepository import PacienteRepository
+from src.repositori.Equipe_Medica.UsuarioRepository import UsuarioRepository
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 
 class PacienteService:
-    def __init__(self, paciente_repo: PacienteRepositori, usuario_repo: UsuarioRepositori):
+    def __init__(self, paciente_repo: PacienteRepository, usuario_repo: UsuarioRepository):
         self.repositorio_paciente = paciente_repo
         self.repositorio_usuario = usuario_repo
 

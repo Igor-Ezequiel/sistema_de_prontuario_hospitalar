@@ -5,7 +5,7 @@ from src.schemas.equipe_schema import (
     UsuarioCredenciaisUpdate, 
     UsuarioResponse
 )
-from src.repositori.Equipe_Medica.UsuarioRepository import UsuarioRepositori
+from src.repositori.Equipe_Medica.UsuarioRepository import UsuarioRepository
 from src.service.UsuarioService import UsuarioService
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError, PermissaoNegadaError
 from src.deps import get_db
@@ -15,7 +15,7 @@ router = APIRouter(prefix="/usuarios", tags=["Autenticação e Usuários"])
 @router.post("/login", response_model=UsuarioResponse)
 def fazer_login(dados: LoginRequest, db = Depends(get_db)):
     try:
-        service = UsuarioService(UsuarioRepositori(db))
+        service = UsuarioService(UsuarioRepository(db))
         return service.fazer_login(dados.email, dados.senha)
     except PermissaoNegadaError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
@@ -23,7 +23,7 @@ def fazer_login(dados: LoginRequest, db = Depends(get_db)):
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def criar_usuario(dados: UsuarioCreate, db = Depends(get_db)):
     try:
-        service = UsuarioService(UsuarioRepositori(db))
+        service = UsuarioService(UsuarioRepository(db))
         id_gerado = service.Criar_Usuario(dados.email, dados.senha, dados.cargo, dados.ativo)
         return {"mensagem": "Usuário criado com sucesso", "id": id_gerado}
     except RegraDeNegocioError as e:
@@ -32,7 +32,7 @@ def criar_usuario(dados: UsuarioCreate, db = Depends(get_db)):
 @router.get("/{id_usuario}", response_model=UsuarioResponse)
 def buscar_usuario(id_usuario: int, db = Depends(get_db)):
     try:
-        service = UsuarioService(UsuarioRepositori(db))
+        service = UsuarioService(UsuarioRepository(db))
         return service.Buscar_Usuario(id_usuario)
     except NaoEncontradoError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
@@ -40,7 +40,7 @@ def buscar_usuario(id_usuario: int, db = Depends(get_db)):
 @router.put("/{id_usuario}/credenciais")
 def atualizar_credenciais(id_usuario: int, dados: UsuarioCredenciaisUpdate, db = Depends(get_db)):
     try:
-        service = UsuarioService(UsuarioRepositori(db))
+        service = UsuarioService(UsuarioRepository(db))
         service.Atualizar_Credenciais(id_usuario, dados.email, dados.senha)
         return {"mensagem": "Credenciais atualizadas com sucesso"}
     except NaoEncontradoError as e:
@@ -51,7 +51,7 @@ def atualizar_credenciais(id_usuario: int, dados: UsuarioCredenciaisUpdate, db =
 @router.patch("/{id_usuario}/desativar")
 def desativar_usuario(id_usuario: int, db = Depends(get_db)):
     try:
-        service = UsuarioService(UsuarioRepositori(db))
+        service = UsuarioService(UsuarioRepository(db))
         service.Desativar_Usuario(id_usuario)
         return {"mensagem": "Usuário desativado com sucesso"}
     except NaoEncontradoError as e:
@@ -62,7 +62,7 @@ def desativar_usuario(id_usuario: int, db = Depends(get_db)):
 @router.patch("/{id_usuario}/reativar")
 def reativar_usuario(id_usuario: int, db = Depends(get_db)):
     try:
-        service = UsuarioService(UsuarioRepositori(db))
+        service = UsuarioService(UsuarioRepository(db))
         service.Reativar_Usuario(id_usuario)
         return {"mensagem": "Usuário reativado com sucesso"}
     except NaoEncontradoError as e:

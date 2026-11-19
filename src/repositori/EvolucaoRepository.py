@@ -1,6 +1,6 @@
 from src.models.Classes import Evolucao, CID, Prescricao
 
-class EvolucaoRepositori:
+class EvolucaoRepository:
     
     def __init__(self, db_conexao):
         self.db = db_conexao

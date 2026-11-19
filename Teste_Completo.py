@@ -15,7 +15,7 @@ from src.models.Classes import (
 )
 from repositori.AtendimentoRepository import AtendimentoRepository
 from repositori.TriagemRepository import TriagemRepository
-from repositori.EvolucaoRepository import EvolucaoRepositori
+from repositori.EvolucaoRepository import EvolucaoRepository
 
 
 # --- ADAPTADOR DE BANCO EM MEMÓRIA ---
@@ -202,7 +202,7 @@ def executar_fluxo_hospitalar():
 
     atend_repo = AtendimentoRepository(db)
     triagem_repo = TriagemRepository(db)
-    evolucao_repo = EvolucaoRepositori(db)
+    evolucao_repo = EvolucaoRepository(db)
     fila_prioridade = FilaManchester()
 
     # ------------------------------------------------------------------

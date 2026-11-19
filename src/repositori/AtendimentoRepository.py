@@ -5,9 +5,9 @@ from src.models.Classes import (
     StatusAtendimento  
 )
 
-from repositori.TriagemRepository import TriagemRepository
-from repositori.EvolucaoRepository import EvolucaoRepositori
-from repositori.PermissaoExtraRepository import PermissaoExtraRepositori
+from src.repositori.TriagemRepository import TriagemRepository
+from src.repositori.EvolucaoRepository import EvolucaoRepository
+from src.repositori.PermissaoExtraRepository import PermissaoExtraRepository
 
 
 class AtendimentoRepository:
@@ -15,8 +15,8 @@ class AtendimentoRepository:
         self.db = db_conexao
         
         self.triagem_repo = TriagemRepository(db_conexao)
-        self.evolucao_repo = EvolucaoRepositori(db_conexao)
-        self.permissao_repo = PermissaoExtraRepositori(db_conexao)
+        self.evolucao_repo = EvolucaoRepository(db_conexao)
+        self.permissao_repo = PermissaoExtraRepository(db_conexao)
 
     def inserir_atendimento(self, ficha: Atendimento) -> int:
         sql = """

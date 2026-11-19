@@ -1,10 +1,10 @@
 from src.models.Classes import Coordenador
-from repositori.Equipe_Medica.CoordenadorRepository import CoordenadorRepositori
+from src.repositori.Equipe_Medica.CoordenadorRepository import CoordenadorRepository
 from src.security import gerar_hash_senha
 from src.exceptions import NaoEncontradoError, RegraDeNegocioError
 
 class CoordenadorService:
-    def __init__(self, coordenador_repo: CoordenadorRepositori):
+    def __init__(self, coordenador_repo: CoordenadorRepository):
         self.coordenador_repo = coordenador_repo
 
     def cadastrar_coordenador(self, nome: str, setor_responsavel: str, email: str, senha_plana: str) -> int:

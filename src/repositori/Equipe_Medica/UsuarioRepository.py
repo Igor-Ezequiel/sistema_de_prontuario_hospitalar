@@ -103,8 +103,15 @@ class UsuarioRepository:
         })
         self.db.commit()
 
+        
     def desativar_usuario(self, id_usuario: int):
-
+        
         sql = "UPDATE usuario SET ativo = :ativo WHERE id = :id"
         self.db.execute(sql, {"ativo": False, "id": id_usuario})
+        self.db.commit()
+
+    def reativar_usuario(self, id_usuario: int):
+        
+        sql = "UPDATE usuario SET ativo = :ativo WHERE id = :id"
+        self.db.execute(sql, {"ativo": True, "id": id_usuario})
         self.db.commit()

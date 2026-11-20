@@ -34,7 +34,6 @@ class EvolucaoService:
         if ficha is None:
             raise NaoEncontradoError("O paciente não possui atendimento registrado.")
 
-        
         if ficha.status != StatusAtendimento.EM_ATENDIMENTO.value:
             raise RegraDeNegocioError(
                 f"Não é possível registrar evolução. Status atual do atendimento: {ficha.status}."
@@ -48,7 +47,6 @@ class EvolucaoService:
         if not relato or not relato.strip():
             raise RegraDeNegocioError("O relato clínico da evolução não pode estar vazio.")
 
-        
         objetos_cid = []
         if lista_cids:
             for codigo in lista_cids:
@@ -57,7 +55,6 @@ class EvolucaoService:
                     raise NaoEncontradoError(f"O código CID '{codigo}' não existe no sistema.")
                 objetos_cid.append(cid_encontrado)
 
-        
         nova_evolucao = Evolucao(
             id_evolucao=None,
             relato=relato,
@@ -68,7 +65,6 @@ class EvolucaoService:
         )
         nova_evolucao.id = self.evolucao_repo.Inserir_Evolucao(nova_evolucao)
 
-        
         for cid_obj in objetos_cid:
             self.evolucao_repo.vincular_diagnostico(nova_evolucao.id, cid_obj.codigo)
             nova_evolucao.diagnosticos.append(cid_obj)
@@ -88,7 +84,6 @@ class EvolucaoService:
         if cid_encontrado is None:
             raise NaoEncontradoError(f"O código CID '{codigo_cid}' não existe no sistema.")
 
-        
         cids_atuais = self.evolucao_repo.buscar_diagnosticos_por_evolucao(id_evolucao)
         for cid_atual in cids_atuais:
             if cid_atual.codigo == codigo_cid:
@@ -104,7 +99,6 @@ class EvolucaoService:
             raise NaoEncontradoError("Evolução clínica não encontrada no sistema.")
 
         evolucao.diagnosticos = self.evolucao_repo.buscar_diagnosticos_por_evolucao(id_evolucao)
-        
         evolucao.prescricoes = self.evolucao_repo.buscar_prescricoes_por_evolucao(id_evolucao)
         
         return evolucao
@@ -154,5 +148,9 @@ class EvolucaoService:
 
         if evolucao.medico_id != medico_id:
             raise PermissaoNegadaError("Apenas o médico autor pode excluir esta evolução clínica.")
+
+        prescricoes = self.evolucao_repo.buscar_prescricoes_por_evolucao(id_evolucao)
+        if prescricoes:
+            raise RegraDeNegocioError("Não é possível excluir uma evolução que já possui prescrições vinculadas.")
 
         self.evolucao_repo.excluir_evolucao(id_evolucao)

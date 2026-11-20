@@ -101,3 +101,5 @@ def excluir_evolucao(id_evolucao: int, medico_id: int, db = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
     except NaoEncontradoError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except RegraDeNegocioError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

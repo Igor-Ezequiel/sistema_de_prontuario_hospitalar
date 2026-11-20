@@ -317,3 +317,4 @@ Itens identificados no código que valem ser tratados antes de uso real:
 ## 👤 Autor
 
 Desenvolvido por **Igor Ezequiel** — [@Igor-Ezequiel](https://github.com/Igor-Ezequiel)
+Regras de Négocios por **Binha Dauma** — [@binhadauma](https://github.com/binhadauma)

@@ -11,7 +11,13 @@ router = APIRouter(prefix="/coordenadores", tags=["Equipe Médica - Coordenadore
 def cadastrar_coordenador(dados: CoordenadorCreate, db = Depends(get_db)):
     try:
         service = CoordenadorService(CoordenadorRepository(db))
-        id_gerado = service.cadastrar_coordenador(dados.nome, dados.setor_responsavel, dados.email, dados.senha)
+        id_gerado = service.cadastrar_coordenador(
+            dados.nome,
+            dados.setor_responsavel,
+            dados.email,
+            dados.senha,
+            dados.cpf
+        )
         return {"mensagem": "Coordenador cadastrado com sucesso", "id": id_gerado}
     except RegraDeNegocioError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

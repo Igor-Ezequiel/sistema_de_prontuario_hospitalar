@@ -1,16 +1,24 @@
 from fastapi import HTTPException, status
-from database.connection import iniciar_conexao 
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from database.connection import SessionLocal
 from src.exceptions import BancoDeDadosError
 
+
 def get_db():
-    conexao = None
+    db = SessionLocal()
     try:
-        conexao = iniciar_conexao()
-       
-        yield conexao
-    except BancoDeDadosError as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        yield db
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Registo duplicado ou violação de integridade (e-mail, CPF ou CRM já registado).",
+        )
+    except (SQLAlchemyError, BancoDeDadosError):
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro interno ao processar operação na base de dados.",
+        )
     finally:
-       
-        if conexao:
-            conexao.close()
+        db.close()

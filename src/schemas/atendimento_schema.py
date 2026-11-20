@@ -61,7 +61,7 @@ class PermissaoExtraRequest(BaseModel):
     medico_id: int
     motivo: str = Field(..., min_length=3)
 
-class AtendimentoResponse(BaseModel):
+class AtendimentoSimplesResponse(BaseModel):
     id: int
     status: StatusAtendimento
     cor_risco: CorRisco
@@ -69,12 +69,29 @@ class AtendimentoResponse(BaseModel):
     data_alta: Optional[datetime] = None
     paciente_id: int
     medico_id: Optional[int] = None
-    
+
+    class Config:
+        from_attributes = True
+
+class AtendimentoResponse(AtendimentoSimplesResponse):
     paciente: Optional[PacienteResponse] = None
     medico: Optional[MedicoResponse] = None
     triagens: List[TriagemResponse] = []
     evolucoes: List[EvolucaoResponse] = []
-    permissoes_extras: List[Any] = []
+
+    
+class PermissaoExtraResponse(BaseModel):
+    id: int
+    data_hora_liberacao: datetime
+    motivo: str
+    validade: datetime
+    medico_id: int
+    atendimento_id: int
+    coordenador_id: int
 
     class Config:
         from_attributes = True
+        
+class AtendimentoAuditoriaResponse(AtendimentoResponse):
+    
+    permissoes_extras: List[PermissaoExtraResponse] = []

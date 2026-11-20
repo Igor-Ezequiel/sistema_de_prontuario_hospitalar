@@ -5,8 +5,11 @@ from src.schemas.atendimento_schema import (
     DarAltaRequest,
     ChamarPacienteRequest,
     PermissaoExtraRequest,
-    AtendimentoResponse
+    AtendimentoSimplesResponse,
+    AtendimentoResponse,
+    AtendimentoAuditoriaResponse
 )
+
 from src.repositori.AtendimentoRepository import AtendimentoRepository
 from src.repositori.Equipe_Medica.MedicoRepository import MedicoRepository
 from src.repositori.PlantaoRepository import PlantaoRepository
@@ -45,7 +48,7 @@ def consultar_status_fila():
         "capacidade_maxima_atingida": fila_hospital.Verificar_QuantidadeMax()
     }
 
-@router.post("/chamar-proximo", response_model=AtendimentoResponse)
+@router.post("/chamar-proximo", response_model=AtendimentoSimplesResponse)
 def chamar_proximo_paciente(dados: ChamarPacienteRequest, db = Depends(get_db)):
     try:
         service = obter_service(db)
@@ -55,7 +58,7 @@ def chamar_proximo_paciente(dados: ChamarPacienteRequest, db = Depends(get_db)):
     except NaoEncontradoError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-@router.get("/{atendimento_id}", response_model=AtendimentoResponse)
+@router.get("/{atendimento_id}", response_model=AtendimentoSimplesResponse)
 def buscar_atendimento_simples(atendimento_id: int, db = Depends(get_db)):
     try:
         service = obter_service(db)
@@ -71,7 +74,7 @@ def buscar_prontuario_completo(atendimento_id: int, db = Depends(get_db)):
     except NaoEncontradoError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-@router.get("/{atendimento_id}/auditoria", response_model=AtendimentoResponse)
+@router.get("/{atendimento_id}/auditoria", response_model=AtendimentoAuditoriaResponse)
 def buscar_prontuario_auditoria(atendimento_id: int, db = Depends(get_db)):
     try:
         service = obter_service(db)
@@ -103,7 +106,7 @@ def dar_alta_paciente(atendimento_id: int, dados: DarAltaRequest, db = Depends(g
     except RegraDeNegocioError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
-@router.post("/{atendimento_id}/permissao-extra", response_model=AtendimentoResponse)
+@router.post("/{atendimento_id}/permissao-extra", response_model=AtendimentoSimplesResponse)
 def conceder_permissao_extra(atendimento_id: int, dados: PermissaoExtraRequest, db = Depends(get_db)):
     try:
         service = obter_service(db)

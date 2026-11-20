@@ -27,10 +27,13 @@ class UsuarioService:
         
         return usuario
 
-    def Criar_Usuario(self, email: str, senha: str, cargo: str, ativo: bool = True) -> int:
+    def Criar_Usuario(self, email: str, senha: str, cargo: str, cpf: str, ativo: bool = True) -> int:
         
         if self.repositori_usuario.buscar_por_email(email):
             raise RegraDeNegocioError("Este e-mail já está cadastrado.")
+
+        if self.repositori_usuario.buscar_por_cpf(cpf):
+            raise RegraDeNegocioError("Este CPF já está cadastrado.")
 
         senha_hash = gerar_hash_senha(senha)
 
@@ -39,7 +42,8 @@ class UsuarioService:
             email=email,
             senha=senha_hash,
             cargo=cargo,
-            ativo=ativo
+            ativo=ativo,
+            cpf=cpf
         )
         return self.repositori_usuario.inserir_usuario(novo_usuario)
     
@@ -67,7 +71,6 @@ class UsuarioService:
             
         self.repositori_usuario.atualizar_usuario(usuario)
 
-
     def Desativar_Usuario(self, id_usuario: int):
         
         usuario = self.Buscar_Usuario(id_usuario)
@@ -77,7 +80,6 @@ class UsuarioService:
             
         self.repositori_usuario.desativar_usuario(id_usuario)
 
-
     def Reativar_Usuario(self, id_usuario: int):
         
         usuario = self.Buscar_Usuario(id_usuario)
@@ -86,6 +88,3 @@ class UsuarioService:
             raise RegraDeNegocioError("Este usuário já está ativo no sistema.")
             
         self.repositori_usuario.reativar_usuario(id_usuario)
-        
-       
-        

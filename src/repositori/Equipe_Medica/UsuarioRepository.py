@@ -7,14 +7,15 @@ class UsuarioRepository:
 
     def inserir_usuario(self, novo_usuario: Usuario) -> int:
         sql = """
-            INSERT INTO usuario (email, senha, cargo, ativo)
-            VALUES (:email, :senha, :cargo, :ativo)
+            INSERT INTO usuario (email, senha, cargo, cpf, ativo)
+            VALUES (:email, :senha, :cargo, :cpf, :ativo)
             RETURNING id
         """
         resultado = self.db.execute(sql, {
             "email": novo_usuario.email,
             "senha": novo_usuario.senha,
             "cargo": novo_usuario.cargo,
+            "cpf": novo_usuario.cpf,
             "ativo": novo_usuario.ativo
         }).fetchone()
 
@@ -23,7 +24,7 @@ class UsuarioRepository:
 
     def buscar_por_id(self, id_usuario: int) -> Usuario:
         sql = """
-            SELECT id, email, senha, cargo, ativo
+            SELECT id, email, senha, cargo, cpf, ativo
             FROM usuario
             WHERE id = :id
         """
@@ -37,12 +38,13 @@ class UsuarioRepository:
             email=linha.email,
             senha=linha.senha,
             cargo=linha.cargo,
-            ativo=bool(linha.ativo)
+            ativo=bool(linha.ativo),
+            cpf=linha.cpf
         )
 
     def buscar_por_email(self, email: str) -> Usuario:
         sql = """
-            SELECT id, email, senha, cargo, ativo
+            SELECT id, email, senha, cargo, cpf, ativo
             FROM usuario
             WHERE email = :email
         """
@@ -56,7 +58,29 @@ class UsuarioRepository:
             email=linha.email,
             senha=linha.senha,
             cargo=linha.cargo,
-            ativo=bool(linha.ativo)
+            ativo=bool(linha.ativo),
+            cpf=linha.cpf
+        )
+
+    def buscar_por_cpf(self, cpf: str) -> Usuario:
+        cpf_limpo = "".join(filter(str.isdigit, cpf))
+        sql = """
+            SELECT id, email, senha, cargo, cpf, ativo
+            FROM usuario
+            WHERE cpf = :cpf
+        """
+        linha = self.db.execute(sql, {"cpf": cpf_limpo}).fetchone()
+
+        if not linha:
+            return None
+
+        return Usuario(
+            id_usuario=linha.id,
+            email=linha.email,
+            senha=linha.senha,
+            cargo=linha.cargo,
+            ativo=bool(linha.ativo),
+            cpf=linha.cpf
         )
 
     def atualizar_usuario(self, usuario: Usuario):
@@ -65,6 +89,7 @@ class UsuarioRepository:
             SET email = :email,
                 senha = :senha,
                 cargo = :cargo,
+                cpf = :cpf,
                 ativo = :ativo
             WHERE id = :id
         """
@@ -72,13 +97,14 @@ class UsuarioRepository:
             "email": usuario.email,
             "senha": usuario.senha,
             "cargo": usuario.cargo,
+            "cpf": usuario.cpf,
             "ativo": usuario.ativo,
             "id": usuario.id
         })
         self.db.commit()
 
     def desativar_usuario(self, id_usuario: int):
-    
+
         sql = "UPDATE usuario SET ativo = :ativo WHERE id = :id"
         self.db.execute(sql, {"ativo": False, "id": id_usuario})
         self.db.commit()

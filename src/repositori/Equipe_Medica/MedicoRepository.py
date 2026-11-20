@@ -28,7 +28,7 @@ class MedicoRepository:
     def buscar_por_id(self, id_medico: int) -> Medico:
         sql = """
             SELECT m.id, m.nome, m.crm, m.especialidade_medica_id AS especialidade,
-                   u.email, u.senha, u.ativo
+                   u.email, u.senha, u.cpf, u.ativo
             FROM medico m
             INNER JOIN usuario u ON m.id = u.id
             WHERE m.id = :id
@@ -45,13 +45,14 @@ class MedicoRepository:
             especialidade=linha.especialidade,
             email=linha.email,
             senha=linha.senha,
-            ativo=bool(linha.ativo)
+            ativo=bool(linha.ativo),
+            cpf=linha.cpf
         )
 
     def buscar_por_crm(self, crm: str) -> Medico:
         sql = """
             SELECT m.id, m.nome, m.crm, m.especialidade_medica_id AS especialidade,
-                   u.email, u.senha, u.ativo
+                   u.email, u.senha, u.cpf, u.ativo
             FROM medico m
             INNER JOIN usuario u ON m.id = u.id
             WHERE m.crm = :crm
@@ -68,7 +69,8 @@ class MedicoRepository:
             especialidade=linha.especialidade,
             email=linha.email,
             senha=linha.senha,
-            ativo=bool(linha.ativo)
+            ativo=bool(linha.ativo),
+            cpf=linha.cpf
         )
 
     def atualizar_medico(self, medico: Medico):
@@ -92,7 +94,7 @@ class MedicoRepository:
     def buscar_medicos_disponiveis(self, inicio_desejado, fim_desejado) -> list[Medico]:
         sql = """
             SELECT m.id, m.nome, m.crm, m.especialidade_medica_id AS especialidade,
-                   u.email, u.ativo
+                   u.email, u.cpf, u.ativo
             FROM medico m
             INNER JOIN usuario u ON m.id = u.id
             WHERE u.ativo = TRUE
@@ -119,7 +121,8 @@ class MedicoRepository:
                 crm=linha.crm,
                 especialidade=linha.especialidade,
                 email=linha.email,
-                ativo=bool(linha.ativo)
+                ativo=bool(linha.ativo),
+                cpf=linha.cpf
             )
             medicos_livres.append(medico)
             

@@ -89,9 +89,9 @@ class AtendimentoRepository:
     def buscar_prontuario(self, atendimento_id: int) -> Atendimento:
         sql = """
             SELECT 
-                a.id, a.status, a.cor_risco, a.data_hora_entrada, a.data_hora_alta,
-                p.id AS pac_id, p.nome AS pac_nome, p.cpf, p.data_nascimento,
-                m.id AS med_id, m.nome AS med_nome, m.crm
+            a.id, a.status, a.cor_risco, a.data_hora_entrada, a.data_hora_alta,
+            p.id AS pac_id, p.nome AS pac_nome, p.cpf, p.data_nascimento,
+            m.id AS med_id, m.nome AS med_nome, m.crm, m.especialidade_medica_id AS especialidade
             FROM atendimento a
             INNER JOIN paciente p ON a.paciente_id = p.id
             LEFT JOIN medico m ON a.medico_id = m.id
@@ -121,10 +121,11 @@ class AtendimentoRepository:
 
         if base.med_id is not None:
             prontuario.medico = Medico(
-                id_medico=base.med_id,
-                nome=base.med_nome,
-                crm=base.crm
-            )
+            id_medico=base.med_id,
+            nome=base.med_nome,
+            crm=base.crm,
+            especialidade=base.especialidade
+        )
 
         prontuario.triagens = self.triagem_repo.buscar_historico_por_atendimento(atendimento_id)
         prontuario.evolucoes = self.evolucao_repo.buscar_historico_por_atendimento(atendimento_id)

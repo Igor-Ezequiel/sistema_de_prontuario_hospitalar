@@ -8,16 +8,17 @@ class MedicoService:
     def __init__(self, medico_repo: MedicoRepository):
         self.medico_repo = medico_repo
 
-    def cadastrar_medico(self, nome: str, crm: str, especialidade: str, email: str, senha_plana: str) -> int:
+    def cadastrar_medico(self, nome: str, crm: str, especialidade: str, email: str, senha_plana: str, cpf: str) -> int:
         
         crm_em_uso = self.medico_repo.buscar_por_crm(crm)
         if crm_em_uso:
             raise RegraDeNegocioError("Já existe um médico cadastrado com este CRM no hospital.")
 
-        
+        if self.medico_repo.usuario_repo.buscar_por_cpf(cpf):
+            raise RegraDeNegocioError("Já existe um usuário cadastrado com este CPF.")
+
         senha_protegida = gerar_hash_senha(senha_plana)
 
-      
         novo_medico = Medico(
             id_medico=None, 
             nome=nome,
@@ -25,10 +26,10 @@ class MedicoService:
             especialidade=especialidade,
             email=email,
             senha=senha_protegida,
-            ativo=True       
+            ativo=True,
+            cpf=cpf
         )
         
-       
         return self.medico_repo.inserir_medico(novo_medico)
 
     def buscar_medico_valido(self, id_medico: int) -> Medico:
@@ -47,18 +48,15 @@ class MedicoService:
        
         medico = self.buscar_medico_valido(id_medico)
                 
-        
         if medico.crm != crm:
             crm_em_uso = self.medico_repo.buscar_por_crm(crm)
             if crm_em_uso:
                 raise RegraDeNegocioError("O novo CRM informado já pertence a outro profissional.")
                 
-       
         medico.nome = nome
         medico.crm = crm
         medico.especialidade = especialidade
             
-       
         self.medico_repo.atualizar_medico(medico)
         
         return medico
@@ -66,15 +64,11 @@ class MedicoService:
     def inativar_medico(self, id_medico: int):
         
         self.buscar_medico_valido(id_medico)
-        
-      
         self.medico_repo.desativar_medico(id_medico)
-
 
     def buscar_medicos_para_plantao(self, inicio_desejado: datetime, fim_desejado: datetime) -> list[Medico]:
        
         if inicio_desejado >= fim_desejado:
             raise RegraDeNegocioError("A data/hora de início do plantão deve ser anterior à data de fim do plantao.")
             
-       
         return self.medico_repo.buscar_medicos_disponiveis(inicio_desejado, fim_desejado)

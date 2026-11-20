@@ -7,21 +7,23 @@ class CoordenadorService:
     def __init__(self, coordenador_repo: CoordenadorRepository):
         self.coordenador_repo = coordenador_repo
 
-    def cadastrar_coordenador(self, nome: str, setor_responsavel: str, email: str, senha_plana: str) -> int:
+    def cadastrar_coordenador(self, nome: str, setor_responsavel: str, email: str, senha_plana: str, cpf: str) -> int:
        
+        if self.coordenador_repo.usuario_repo.buscar_por_cpf(cpf):
+            raise RegraDeNegocioError("Já existe um usuário cadastrado com este CPF.")
+
         senha_protegida = gerar_hash_senha(senha_plana)
 
-        
         novo_coordenador = Coordenador(
             id_coordenador=None, 
             nome=nome,
             setor_responsavel=setor_responsavel,
             email=email,
             senha=senha_protegida,
-            ativo=True       
+            ativo=True,
+            cpf=cpf
         )
         
-       
         return self.coordenador_repo.inserir_coordenador(novo_coordenador)
 
     def buscar_coordenador_valido(self, id_coordenador: int) -> Coordenador:
@@ -40,11 +42,9 @@ class CoordenadorService:
        
         coordenador = self.buscar_coordenador_valido(id_coordenador)
                 
-       
         coordenador.nome = nome
         coordenador.setor_responsavel = setor_responsavel
             
-       
         self.coordenador_repo.atualizar_coordenador(coordenador)
         
         return coordenador
@@ -52,6 +52,4 @@ class CoordenadorService:
     def inativar_coordenador(self, id_coordenador: int):
        
         self.buscar_coordenador_valido(id_coordenador)
-        
-       
         self.coordenador_repo.desativar_coordenador(id_coordenador)

@@ -26,7 +26,7 @@ class EnfermeiroRepository:
     def buscar_por_id(self, id_enfermeiro: int) -> Enfermeiro:
         sql = """
             SELECT e.id, e.nome, e.coren,
-                   u.email, u.senha, u.ativo
+                   u.email, u.senha, u.cpf, u.ativo
             FROM enfermeiro e
             INNER JOIN usuario u ON e.id = u.id
             WHERE e.id = :id
@@ -42,13 +42,14 @@ class EnfermeiroRepository:
             coren=linha.coren,
             email=linha.email,
             senha=linha.senha,
-            ativo=bool(linha.ativo)
+            ativo=bool(linha.ativo),
+            cpf=linha.cpf
         )
 
     def buscar_por_coren(self, coren: str) -> Enfermeiro:
         sql = """
             SELECT e.id, e.nome, e.coren,
-                   u.email, u.senha, u.ativo
+                   u.email, u.senha, u.cpf, u.ativo
             FROM enfermeiro e
             INNER JOIN usuario u ON e.id = u.id
             WHERE e.coren = :coren
@@ -64,7 +65,8 @@ class EnfermeiroRepository:
             coren=linha.coren,
             email=linha.email,
             senha=linha.senha,
-            ativo=bool(linha.ativo)
+            ativo=bool(linha.ativo),
+            cpf=linha.cpf
         )
 
     def atualizar_enfermeiro(self, enfermeiro: Enfermeiro):

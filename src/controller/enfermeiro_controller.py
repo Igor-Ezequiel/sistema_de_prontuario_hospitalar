@@ -11,7 +11,13 @@ router = APIRouter(prefix="/enfermeiros", tags=["Equipe Médica - Enfermeiros"])
 def cadastrar_enfermeiro(dados: EnfermeiroCreate, db = Depends(get_db)):
     try:
         service = EnfermeiroService(EnfermeiroRepository(db))
-        id_gerado = service.cadastrar_enfermeiro(dados.nome, dados.coren, dados.email, dados.senha)
+        id_gerado = service.cadastrar_enfermeiro(
+            dados.nome,
+            dados.coren,
+            dados.email,
+            dados.senha,
+            dados.cpf
+        )
         return {"mensagem": "Enfermeiro cadastrado com sucesso", "id": id_gerado}
     except RegraDeNegocioError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

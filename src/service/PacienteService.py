@@ -9,6 +9,7 @@ class PacienteService:
         self.repositorio_usuario = usuario_repo
 
     def cadastrar_paciente(self, nome: str, cpf: str, data_nascimento) -> int:
+        
         paciente_existente = self.repositorio_paciente.buscar_por_cpf(cpf)
         
         if paciente_existente:
@@ -17,7 +18,7 @@ class PacienteService:
         usuario_existente = self.repositorio_usuario.buscar_por_cpf(cpf)
         
         if usuario_existente:
-            id_vinculado = usuario_existente.id_usuario
+            id_vinculado = usuario_existente.id
         else:
             id_vinculado = None
             
@@ -32,7 +33,6 @@ class PacienteService:
         
         return self.repositorio_paciente.inserir_paciente(novo_paciente)
 
-
     def buscar_paciente_valido(self, id_paciente: int) -> Paciente:
         
         paciente = self.repositorio_paciente.buscar_por_id(id_paciente)
@@ -45,18 +45,18 @@ class PacienteService:
             
         return paciente
 
-
     def atualizar_dados(self, id_paciente: int, nome: str, cpf: str, data_nascimento, usuario_id: int = None) -> Paciente:
        
         paciente = self.buscar_paciente_valido(id_paciente)
+        cpf_limpo = "".join(filter(str.isdigit, cpf))
         
-        if paciente.cpf != cpf:
-            cpf_em_uso = self.repositorio_paciente.buscar_por_cpf(cpf)
+        if paciente.cpf != cpf_limpo:
+            cpf_em_uso = self.repositorio_paciente.buscar_por_cpf(cpf_limpo)
             if cpf_em_uso:
                 raise RegraDeNegocioError("O novo CPF informado já pertence a outro paciente cadastrado.")
                 
         paciente.nome = nome
-        paciente.cpf = cpf
+        paciente.cpf = cpf_limpo
         paciente.data_nascimento = data_nascimento
         
         if usuario_id is not None:
@@ -66,9 +66,7 @@ class PacienteService:
         
         return paciente
 
-
     def inativar_paciente(self, id_paciente: int):
     
         paciente = self.buscar_paciente_valido(id_paciente)
-        
         self.repositorio_paciente.excluir_paciente(id_paciente)

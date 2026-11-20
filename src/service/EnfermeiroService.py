@@ -7,26 +7,27 @@ class EnfermeiroService:
     def __init__(self, enfermeiro_repo: EnfermeiroRepository):
         self.enfermeiro_repo = enfermeiro_repo
 
-    def cadastrar_enfermeiro(self, nome: str, coren: str, email: str, senha_plana: str) -> int:
+    def cadastrar_enfermeiro(self, nome: str, coren: str, email: str, senha_plana: str, cpf: str) -> int:
       
         coren_em_uso = self.enfermeiro_repo.buscar_por_coren(coren)
         if coren_em_uso:
             raise RegraDeNegocioError("Já existe um enfermeiro cadastrado com este COREN.")
 
-       
+        if self.enfermeiro_repo.usuario_repo.buscar_por_cpf(cpf):
+            raise RegraDeNegocioError("Já existe um usuário cadastrado com este CPF.")
+
         senha_protegida = gerar_hash_senha(senha_plana)
 
-        
         novo_enfermeiro = Enfermeiro(
             id_enfermeiro=None, 
             nome=nome,
             coren=coren,
             email=email,
             senha=senha_protegida,
-            ativo=True       
+            ativo=True,
+            cpf=cpf
         )
         
-       
         return self.enfermeiro_repo.inserir_enfermeiro(novo_enfermeiro)
 
     def buscar_enfermeiro_valido(self, id_enfermeiro: int) -> Enfermeiro:
@@ -45,17 +46,14 @@ class EnfermeiroService:
         
         enfermeiro = self.buscar_enfermeiro_valido(id_enfermeiro)
                 
-       
         if enfermeiro.coren != coren:
             coren_em_uso = self.enfermeiro_repo.buscar_por_coren(coren)
             if coren_em_uso:
                 raise RegraDeNegocioError("O novo COREN informado já pertence a outro profissional.")
                 
-        
         enfermeiro.nome = nome
         enfermeiro.coren = coren
             
-       
         self.enfermeiro_repo.atualizar_enfermeiro(enfermeiro)
         
         return enfermeiro
@@ -63,6 +61,4 @@ class EnfermeiroService:
     def inativar_enfermeiro(self, id_enfermeiro: int):
         
         self.buscar_enfermeiro_valido(id_enfermeiro)
-        
-       
         self.enfermeiro_repo.desativar_enfermeiro(id_enfermeiro)

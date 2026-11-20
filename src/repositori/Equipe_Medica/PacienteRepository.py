@@ -49,12 +49,13 @@ class PacienteRepository:
         return paciente
 
     def buscar_por_cpf(self, cpf: str) -> Paciente:
+        cpf_limpo = "".join(filter(str.isdigit, cpf))
         sql = """
             SELECT id, nome, cpf, data_nascimento, usuario_id, ativo
             FROM paciente
             WHERE cpf = :cpf
         """
-        linha = self.db.execute(sql, {"cpf": cpf}).fetchone()
+        linha = self.db.execute(sql, {"cpf": cpf_limpo}).fetchone()
 
         if not linha:
             return None
@@ -92,7 +93,6 @@ class PacienteRepository:
         self.db.commit()
 
     def excluir_paciente(self, id_paciente: int):
-        
         sql = "UPDATE paciente SET ativo = FALSE WHERE id = :id"
         self.db.execute(sql, {"id": id_paciente})
         self.db.commit()

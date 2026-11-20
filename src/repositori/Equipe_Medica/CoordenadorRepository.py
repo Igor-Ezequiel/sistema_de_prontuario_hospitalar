@@ -26,7 +26,7 @@ class CoordenadorRepository:
     def buscar_por_id(self, id_coordenador: int) -> Coordenador:
         sql = """
             SELECT c.id, c.nome, c.setor_responsavel,
-                   u.email, u.senha, u.ativo
+                   u.email, u.senha, u.cpf, u.ativo
             FROM coordenador c
             INNER JOIN usuario u ON c.id = u.id
             WHERE c.id = :id
@@ -42,7 +42,8 @@ class CoordenadorRepository:
             setor_responsavel=linha.setor_responsavel,
             email=linha.email,
             senha=linha.senha,
-            ativo=bool(linha.ativo)
+            ativo=bool(linha.ativo),
+            cpf=linha.cpf
         )
 
     def atualizar_coordenador(self, coordenador: Coordenador):

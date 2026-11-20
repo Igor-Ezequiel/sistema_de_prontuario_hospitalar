@@ -5,13 +5,13 @@ CREATE TABLE cid (
 );
 
 
-
 CREATE TABLE usuario (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     senha VARCHAR(255) NOT NULL,
     ativo BOOLEAN DEFAULT TRUE NOT NULL,
     cargo VARCHAR(55) NOT NULL
+    cpf VARCHAR(14) UNIQUE NOT NULL,
 );
 
 CREATE TABLE coordenador (

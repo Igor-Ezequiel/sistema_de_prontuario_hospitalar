@@ -24,7 +24,7 @@ def fazer_login(dados: LoginRequest, db = Depends(get_db)):
 def criar_usuario(dados: UsuarioCreate, db = Depends(get_db)):
     try:
         service = UsuarioService(UsuarioRepository(db))
-        id_gerado = service.Criar_Usuario(dados.email, dados.senha, dados.cargo, dados.ativo)
+        id_gerado = service.Criar_Usuario(dados.email, dados.senha, dados.cargo, dados.cpf, dados.ativo)
         return {"mensagem": "Usuário criado com sucesso", "id": id_gerado}
     except RegraDeNegocioError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

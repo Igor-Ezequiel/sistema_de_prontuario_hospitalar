@@ -76,7 +76,7 @@ class PlantaoRepository:
         sql = """
             SELECT p.id, p.setor_ala, p.data_hora_inicio, p.data_hora_fim, 
                    p.medico_id, p.coordenador_id,
-                   m.nome AS medico_nome, m.crm, m.especialidade,
+                   m.nome AS medico_nome, m.crm, m.especialidade_medica_id AS especialidade,
                    c.nome AS coordenador_nome, c.setor_responsavel
             FROM plantao p
             INNER JOIN medico m ON p.medico_id = m.id

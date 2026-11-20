@@ -18,7 +18,8 @@ def cadastrar_medico(dados: MedicoCreate, db = Depends(get_db)):
             crm=dados.crm,
             especialidade=dados.especialidade,
             email=dados.email,
-            senha_plana=dados.senha
+            senha_plana=dados.senha,
+            cpf=dados.cpf
         )
         return {"mensagem": "Médico cadastrado com sucesso", "id": id_gerado}
     except RegraDeNegocioError as e:
